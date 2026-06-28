@@ -17,6 +17,9 @@ namespace RedSocialGB.Modelos
         private DateTime aFechaNacimiento;
         private string aCelular;
         private string aContrasena;
+        private cLista Amigos = new cLista();
+        private cPila SolicitudesRecibidas= new cPila();
+       
 
         #endregion *********************** ATRIBUTOS ************************
 
@@ -33,6 +36,7 @@ namespace RedSocialGB.Modelos
             aFechaNacimiento = DateTime.Now;
             aCelular = "";
             aContrasena = "";
+            
         }
 
         // --------------------------------------------------------------
@@ -87,6 +91,11 @@ namespace RedSocialGB.Modelos
         {
             get { return aContrasena; }
             set { aContrasena = value; }
+        }
+        public cPila Solicitudes
+        {
+            get { return SolicitudesRecibidas; }
+            set { SolicitudesRecibidas = value; }
         }
 
         #endregion ==================== PROPIEDADES =======================

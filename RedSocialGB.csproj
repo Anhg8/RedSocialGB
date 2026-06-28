@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="Estructuras\cArbolB.cs" />
     <Compile Include="Estructuras\cLista.cs" />
+    <Compile Include="Estructuras\cPila.cs" />
     <Compile Include="Modelos\cUsuario.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
