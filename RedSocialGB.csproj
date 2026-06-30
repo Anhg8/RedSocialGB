@@ -44,8 +44,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Estructuras\cArbolB.cs" />
+    <Compile Include="Estructuras\Grafo\cArista.cs" />
+    <Compile Include="Estructuras\Grafo\cGrafo.cs" />
     <Compile Include="Estructuras\cLista.cs" />
     <Compile Include="Estructuras\cPila.cs" />
+    <Compile Include="Estructuras\Grafo\cVertice.cs" />
     <Compile Include="Modelos\cUsuario.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
