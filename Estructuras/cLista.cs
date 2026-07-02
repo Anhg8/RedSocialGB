@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 namespace RedSocialGB.Estructuras
 {
-    internal class cLista
+    public class cLista
     {
         #region --- Atributos
 

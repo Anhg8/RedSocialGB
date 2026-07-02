@@ -18,7 +18,7 @@ namespace RedSocialGB.Modelos
         private string aCelular;
         private string aContrasena;
         private cLista Amigos = new cLista();
-        private cPila SolicitudesRecibidas= new cPila();
+        private cLista SolicitudesRecibidas= new cLista();
        
 
         #endregion *********************** ATRIBUTOS ************************
@@ -92,7 +92,12 @@ namespace RedSocialGB.Modelos
             get { return aContrasena; }
             set { aContrasena = value; }
         }
-        public cPila Solicitudes
+        public cLista ListaAmigos
+        {
+            get { return Amigos; }
+            set { Amigos = value; }
+        }
+        public cLista Solicitudes
         {
             get { return SolicitudesRecibidas; }
             set { SolicitudesRecibidas = value; }
