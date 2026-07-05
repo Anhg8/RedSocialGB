@@ -91,19 +91,6 @@ namespace RedSocialGB.Estructuras
         }
 
 
-        // Recorrido en orden
-        public void Recorrer(NodoB nodo = null)
-        {
-            if (nodo == null) nodo = raiz;
-            int i;
-            for (i = 0; i < nodo.Claves.Count; i++)
-            {
-                if (!nodo.EsHoja) Recorrer(nodo.Hijos[i]);
-                nodo.Claves[i].Escribir();
-            }
-            if (!nodo.EsHoja) Recorrer(nodo.Hijos[i]);
-        }
-
         // Eliminación completa
         public void Eliminar(string clave)
         {
@@ -263,38 +250,8 @@ namespace RedSocialGB.Estructuras
 
             return BuscarInterno(nodo.Hijos[i], id);
         }
-        public void Dibujar()
-        {
-            DibujarNodo(raiz, "", true);
-        }
 
-        private void DibujarNodo(NodoB nodo, string prefijo, bool ultimo)
-        {
-            if (nodo == null) return;
 
-            Console.Write(prefijo);
 
-            if (ultimo)
-            {
-                Console.Write("└── ");
-                prefijo += "    ";
-            }
-            else
-            {
-                Console.Write("├── ");
-                prefijo += "│   ";
-            }
-
-            Console.WriteLine("[" + string.Join(" ", nodo.Claves.Select(c => c.Celular)) + "]");
-
-            for (int i = 0; i < nodo.Hijos.Count; i++)
-            {
-                DibujarNodo(
-                    nodo.Hijos[i],
-                    prefijo,
-                    i == nodo.Hijos.Count - 1
-                );
-            }
-        }
     }
 }

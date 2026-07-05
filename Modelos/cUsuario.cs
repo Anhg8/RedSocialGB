@@ -11,7 +11,7 @@ namespace RedSocialGB.Modelos
     public class cUsuario
     {
         #region *********************** ATRIBUTOS ************************
-
+        private string aNombreUsuario;
         private string aNombres;
         private string aApellidos;
         private DateTime aFechaNacimiento;
@@ -28,6 +28,7 @@ namespace RedSocialGB.Modelos
         // --------------------------------------------------------------
         public cUsuario()
         {
+            aNombreUsuario = "";
             aNombres = "";
             aApellidos = "";
             aFechaNacimiento = DateTime.Now;
@@ -37,12 +38,13 @@ namespace RedSocialGB.Modelos
         }
 
         // --------------------------------------------------------------
-        public cUsuario(string pNombres,
+        public cUsuario(string pNombreU, string pNombres,
                         string pApellidos,
                         DateTime pFechaNacimiento,
                         string pCelular,
                         string pContrasena)
         {
+            aNombreUsuario = pNombreU;
             aNombres = pNombres;
             aApellidos = pApellidos;
             aFechaNacimiento = pFechaNacimiento;
@@ -56,6 +58,11 @@ namespace RedSocialGB.Modelos
         #region ==================== PROPIEDADES =======================
 
         // --------------------------------------------------------------
+        public string NombreUsuario
+        {
+            get { return aNombreUsuario; }
+            set { aNombreUsuario = value; }
+        }
         public string Nombres
         {
             get { return aNombres; }
@@ -120,45 +127,6 @@ namespace RedSocialGB.Modelos
         }
 
         // --------------------------------------------------------------
-        public void Leer(cArbolB ArbolUsuarios)
-        {
-            Console.WriteLine("INGRESAR DATOS DEL USUARIO");
-            Console.WriteLine("==========================");
-
-            Nombres = cValidaciones.LeerCadena("Ingrese Nombres: ");
-
-            Apellidos = cValidaciones.LeerCadena("Ingrese Apellidos: ");
-
-            FechaNacimiento = cValidaciones.LeerFecha();
-
-            Celular = cValidaciones.LeerCelularNoRepetido(ArbolUsuarios);
-
-            Contrasena = cValidaciones.LeerContrasena();
-        }
-
-        // --------------------------------------------------------------
-        public void Mostrar()
-        {
-            Console.WriteLine("DATOS DEL USUARIO");
-            Console.WriteLine("=================");
-
-            Console.WriteLine("Nombres          : " + Nombres);
-            Console.WriteLine("Apellidos        : " + Apellidos);
-            Console.WriteLine("FechaNacimiento  : " + FechaNacimiento.ToShortDateString());
-            Console.WriteLine("Edad             : " + GetEdad());
-            Console.WriteLine("Celular          : " + Celular);
-        }
-
-        // --------------------------------------------------------------
-        public void Escribir()
-        {
-            Console.WriteLine(
-                Celular.PadRight(15) +
-                Nombres.PadRight(20) +
-                Apellidos.PadRight(20) +
-                GetEdad().ToString().PadLeft(5)
-            );
-        }
 
         #endregion ==================== MÉTODOS PROCESO =======================
 

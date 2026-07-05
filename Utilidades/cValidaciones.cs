@@ -1,157 +1,68 @@
-﻿using RedSocialGB.Estructuras;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 
 namespace RedSocialGB.Utilidades
 {
-    public class cValidaciones
+    public static class cValidaciones
     {
         #region ==================== VALIDACIONES =======================
 
         // --------------------------------------------------------------
-        public static int LeerOpcion(int pMinimo, int pMaximo)
+        public static bool ValidarNombres(string pNombres)
         {
-            int opcion;
+            return !string.IsNullOrWhiteSpace(pNombres);
+        }
 
-            do
+        // --------------------------------------------------------------
+        public static bool ValidarApellidos(string pApellidos)
+        {
+            return !string.IsNullOrWhiteSpace(pApellidos);
+        }
+
+        // --------------------------------------------------------------
+        public static bool ValidarCelular(string pCelular)
+        {
+            if (string.IsNullOrWhiteSpace(pCelular))
+                return false;
+
+            if (pCelular.Length != 9)
+                return false;
+
+            foreach (char c in pCelular)
             {
-                Console.Write("Ingrese una opción: ");
+                if (!char.IsDigit(c))
+                    return false;
             }
-            while (!int.TryParse(Console.ReadLine(), out opcion) ||
-                   opcion < pMinimo ||
-                   opcion > pMaximo);
 
-            return opcion;
+            return true;
         }
 
         // --------------------------------------------------------------
-        public static int LeerEntero(string pMensaje)
+        public static bool ValidarContrasena(string pContrasena)
         {
-            int numero;
+            if (string.IsNullOrWhiteSpace(pContrasena))
+                return false;
 
-            do
-            {
-                Console.Write(pMensaje);
-            }
-            while (!int.TryParse(Console.ReadLine(), out numero));
-
-            return numero;
+            return pContrasena.Length >= 4;
         }
 
         // --------------------------------------------------------------
-        public static string LeerCadena(string pMensaje)
+        public static bool ValidarFechaNacimiento(DateTime pFechaNacimiento)
         {
-            string cadena;
+            // No puede ser una fecha futura
+            if (pFechaNacimiento > DateTime.Today)
+                return false;
+            
 
-            do
-            {
-                Console.Write(pMensaje);
-                cadena = Console.ReadLine().Trim();
-
-            } while (cadena == "");
-
-            return cadena;
+            return true;
         }
-
-        // --------------------------------------------------------------
-        public static string LeerCelular()
+        public static bool ValidarEdad(DateTime pFechaNacimiento)
         {
-            string celular;
-            bool correcto;
-
-            do
-            {
-                Console.Write("Ingrese Número de Celular: ");
-                celular = Console.ReadLine();
-
-                correcto = celular.Length == 9;
-
-                if (correcto)
-                {
-                    foreach (char c in celular)
-                    {
-                        if (!Char.IsDigit(c))
-                        {
-                            correcto = false;
-                            break;
-                        }
-                    }
-                }
-
-                if (!correcto)
-                    Console.WriteLine("ERROR... Debe ingresar un número de 9 dígitos.");
-
-            } while (!correcto);
-
-            return celular;
-        }
-
-        // --------------------------------------------------------------
-        public static string LeerCelularNoRepetido(cArbolB pArbol)
-        {
-            string celular;
-
-            do
-            {
-                celular = LeerCelular();
-                
-
-                if (pArbol.Buscar(celular) != null)
-                    Console.WriteLine("ERROR... El número ya se encuentra registrado.");
-
-            } while (pArbol.Buscar(celular) != null);
-
-            return celular;
-        }
-
-        // --------------------------------------------------------------
-        public static DateTime LeerFecha()
-        {
-            DateTime fecha;
-
-            do
-            {
-                Console.Write("Ingrese Fecha (dd/MM/yyyy): ");
-
-            } while (!DateTime.TryParse(Console.ReadLine(), out fecha));
-
-            return fecha;
-        }
-
-        // --------------------------------------------------------------
-        public static string LeerContrasena()
-        {
-            string contrasena;
-
-            do
-            {
-                Console.Write("Ingrese Contraseña: ");
-                contrasena = Console.ReadLine();
-
-                if (contrasena.Length < 4)
-                    Console.WriteLine("ERROR... La contraseña debe tener al menos 4 caracteres.");
-
-            } while (contrasena.Length < 4);
-
-            return contrasena;
-        }
-
-        // --------------------------------------------------------------
-        public static bool Confirmar(string pMensaje)
-        {
-            string respuesta;
-
-            do
-            {
-                Console.Write(pMensaje + " (S/N): ");
-                respuesta = Console.ReadLine().ToUpper();
-
-            } while (respuesta != "S" && respuesta != "N");
-
-            return respuesta == "S";
+            // Calcular la edad
+            int edad = DateTime.Today.Year - pFechaNacimiento.Year;
+            if (pFechaNacimiento > DateTime.Today.AddYears(-edad))
+                edad--;
+            // Debe ser mayor de edad (18 años o más)
+            return edad >= 18;
         }
 
         #endregion ==================== VALIDACIONES =======================
