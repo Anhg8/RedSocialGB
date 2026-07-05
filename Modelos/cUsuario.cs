@@ -17,10 +17,7 @@ namespace RedSocialGB.Modelos
         private DateTime aFechaNacimiento;
         private string aCelular;
         private string aContrasena;
-        private cLista Amigos = new cLista();
-        private cLista SolicitudesRecibidas= new cLista();
        
-
         #endregion *********************** ATRIBUTOS ************************
 
 

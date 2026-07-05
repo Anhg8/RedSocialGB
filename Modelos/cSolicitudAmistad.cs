@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RedSocialGB.Modelos
 {
-    public  class cSolicitudAmistad
+    public class cSolicitudAmistad
     {
         #region
         private string id_solicitud;
@@ -15,5 +15,12 @@ namespace RedSocialGB.Modelos
         private DateTime fecha_solicitud;
         private DateTime fecha_respuesta;
         #endregion
+        public cSolicitudAmistad()
+        {
+            id_solicitud = "";
+            emisor = null;
+            receptor = null;
+        }
+
     }
 }
