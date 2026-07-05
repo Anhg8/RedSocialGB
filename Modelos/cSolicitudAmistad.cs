@@ -67,7 +67,7 @@ public class cSolicitudAmistad
 
     public override string ToString()
     {
-        return $"{aRemitente.Nombre} -> {aDestinatario.Nombre} ({aFechaEnvio:dd/MM/yyyy HH:mm})";
+        return $"{aRemitente.Nombres} -> {aDestinatario.Nombres} ({aFechaEnvio:dd/MM/yyyy HH:mm})";
     }
 
     #endregion
