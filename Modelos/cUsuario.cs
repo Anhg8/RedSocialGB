@@ -89,16 +89,7 @@ namespace RedSocialGB.Modelos
             get { return aContrasena; }
             set { aContrasena = value; }
         }
-        public cLista ListaAmigos
-        {
-            get { return Amigos; }
-            set { Amigos = value; }
-        }
-        public cLista Solicitudes
-        {
-            get { return SolicitudesRecibidas; }
-            set { SolicitudesRecibidas = value; }
-        }
+
 
         #endregion ==================== PROPIEDADES =======================
 
