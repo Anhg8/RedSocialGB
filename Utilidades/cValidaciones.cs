@@ -7,15 +7,25 @@ namespace RedSocialGB.Utilidades
         #region ==================== VALIDACIONES =======================
 
         // --------------------------------------------------------------
-        public static bool ValidarNombres(string pNombres)
+        
+        public static bool ValidarNombreUsuario(string pNombres)
         {
             return !string.IsNullOrWhiteSpace(pNombres);
         }
 
         // --------------------------------------------------------------
-        public static bool ValidarApellidos(string pApellidos)
+        public static bool ValidarCadena(string Nombres)
         {
-            return !string.IsNullOrWhiteSpace(pApellidos);
+            if (string.IsNullOrWhiteSpace(Nombres))
+            {
+                return false;
+            }
+            foreach (char c in Nombres)
+            {
+                if (char.IsDigit(c))
+                    return false;
+            }
+            return true;
         }
 
         // --------------------------------------------------------------

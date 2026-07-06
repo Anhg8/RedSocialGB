@@ -79,12 +79,12 @@ namespace RedSocialGB.Estructuras
             else
             {
 
-                while (i >= 0 && clave.Celular.CompareTo(nodo.Claves[i].Celular)<0) i--;
+                while (i >= 0 && clave.Celular.CompareTo(nodo.Claves[i].Celular) < 0) i--;
                 i++;
                 if (nodo.Hijos[i].Claves.Count == (2 * t - 1))
                 {
                     DividirHijo(nodo, i, nodo.Hijos[i]);
-                    if (clave.Celular.CompareTo(nodo.Claves[i].Celular)>0) i++;
+                    if (clave.Celular.CompareTo(nodo.Claves[i].Celular) > 0) i++;
                 }
                 InsertarNoLleno(nodo.Hijos[i], clave);
             }
@@ -139,7 +139,7 @@ namespace RedSocialGB.Estructuras
                 if (nodo.EsHoja) return;
 
                 int i = 0;
-                while (i < nodo.Claves.Count && clave.ToString().CompareTo(nodo.Claves[i].Celular)>0) i++;
+                while (i < nodo.Claves.Count && clave.ToString().CompareTo(nodo.Claves[i].Celular) > 0) i++;
 
                 if (i >= nodo.Hijos.Count) return; // 🔹 validación extra
 
@@ -228,27 +228,27 @@ namespace RedSocialGB.Estructuras
             if (!hermano.EsHoja)
                 hermano.Hijos.RemoveAt(0);
         }
-        public cUsuario Buscar(string id)
+        public cUsuario Buscar(string id, Func<cUsuario,string> Selector)
         {
-            return BuscarInterno(Raiz,id);
+            return BuscarInterno(Raiz,id,Selector);
         }
 
-        public cUsuario BuscarInterno(NodoB nodo, string id)
+        public cUsuario BuscarInterno(NodoB nodo, string id, Func<cUsuario, string> Selector)
         {
             int i = 0;
 
             while (i < nodo.Claves.Count &&
-                   id.CompareTo(nodo.Claves[i].Celular)>0) //busca y aumenta a i cuando id> nodo.claves[i]
+                   id.CompareTo(Selector(nodo.Claves[i])) > 0) //busca y aumenta a i cuando id> nodo.claves[i]
                 i++;
 
             if (i < nodo.Claves.Count && //si es igual a clave
-                nodo.Claves[i].Celular == id)
+                Selector(nodo.Claves[i]) == id)
                 return nodo.Claves[i];
 
             if (nodo.EsHoja) //ya no puede seguir buscando si es hoja
                 return null;
 
-            return BuscarInterno(nodo.Hijos[i], id);
+            return BuscarInterno(nodo.Hijos[i], id, Selector);
         }
 
 

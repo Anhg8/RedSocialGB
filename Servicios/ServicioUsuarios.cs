@@ -32,12 +32,12 @@ namespace RedSocialGB.Servicios
                                        string pContrasena)
         {
             // Validaciones
-            if (!cValidaciones.ValidarNombres(NombreU))
+            if (!cValidaciones.ValidarNombreUsuario(NombreU))
                 return "Debe ingresar un nombre de usuario válido.";
-            if (!cValidaciones.ValidarNombres(pNombres))
+            if (!cValidaciones.ValidarCadena(pNombres))
                 return "Debe ingresar los nombres.";
 
-            if (!cValidaciones.ValidarApellidos(pApellidos))
+            if (!cValidaciones.ValidarCadena(pApellidos))
                 return "Debe ingresar los apellidos.";
 
             if (!cValidaciones.ValidarFechaNacimiento(pFechaNacimiento))
@@ -85,7 +85,7 @@ namespace RedSocialGB.Servicios
                 return "El usuario no existe.";
 
             // Validaciones
-            if (!cValidaciones.ValidarNombres(pNombreUsuario))
+            if (!cValidaciones.ValidarNombreUsuario(pNombreUsuario))
                 return "Debe ingresar un nombre de usuario válido.";
 
 
@@ -98,7 +98,7 @@ namespace RedSocialGB.Servicios
         // -------------------------------------------------
         public cUsuario BuscarPorCelular(string pCelular)
         {
-            return aArbolUsuarios.Buscar(pCelular);
+            return aArbolUsuarios.Buscar(pCelular,u=>u.Celular);
         }
 
         // -------------------------------------------------
