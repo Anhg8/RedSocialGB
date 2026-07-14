@@ -52,22 +52,32 @@ public class cSolicitudAmistad
 
     public bool EsRemitente(cUsuario pUsuario)
     {
-        return aRemitente == pUsuario;
+        return aRemitente.Celular == pUsuario.Celular;
     }
 
     public bool EsDestinatario(cUsuario pUsuario)
     {
-        return aDestinatario == pUsuario;
+        return aDestinatario.Celular == pUsuario.Celular;
     }
 
     public bool InvolucraA(cUsuario pUsuario)
     {
-        return aRemitente == pUsuario || aDestinatario == pUsuario;
+        return aRemitente.Celular == pUsuario.Celular || aDestinatario.Celular == pUsuario.Celular;
     }
+    public override bool Equals(object obj)
+    {
+        if (obj is cSolicitudAmistad otra)
+        {
+            return
+                aRemitente.Celular == otra.aRemitente.Celular &&
+                aDestinatario.Celular == otra.aDestinatario.Celular;
+        }
 
+        return false;
+    }
     public override string ToString()
     {
-        return $"{aRemitente.Nombres} -> {aDestinatario.Nombres} ({aFechaEnvio:dd/MM/yyyy HH:mm})";
+        return $"{aRemitente.NombreUsuario} -> {aDestinatario.NombreUsuario} ({aFechaEnvio:dd/MM/yyyy HH:mm})";
     }
 
     #endregion

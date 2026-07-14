@@ -2,33 +2,34 @@
 
 namespace RedSocialGB.Estructuras.Grafo
 {
-    internal class cArista
+    public class cArista
     {
-        public cVertice Destino { get; set; }
+        private cVertice aDestino;
 
-        public int Peso { get; set; }
 
+        //Propiedades
+
+        public cVertice Destino
+        {
+            get { return aDestino; }
+            set { aDestino = value; }
+        }
         public cArista()
         {
-            Destino = null;
-            Peso = 1;
+            aDestino = null;
+            
         }
 
         public cArista(cVertice pDestino)
         {
-            Destino = pDestino;
-            Peso = 1;
+            aDestino = pDestino;
+            
         }
 
-        public cArista(cVertice pDestino, int pPeso)
-        {
-            Destino = pDestino;
-            Peso = pPeso;
-        }
 
         public override string ToString()
         {
-            return $"{Destino}";
+            return $"{aDestino}";
         }
     }
 }

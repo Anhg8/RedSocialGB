@@ -1,14 +1,15 @@
-﻿using System;
-using RedSocialGB.Estructuras;
+﻿using RedSocialGB.Estructuras;
+using RedSocialGB.Modelos;
+using System;
+using System.Collections.Generic;
 
 namespace RedSocialGB.Estructuras.Grafo
 {
-    internal class cGrafo
+    public class cGrafo
     {
         #region --- Atributos
 
         private cLista aVertices;
-        private bool aEsDirigido;
 
         #endregion
 
@@ -20,12 +21,6 @@ namespace RedSocialGB.Estructuras.Grafo
             set => aVertices = value;
         }
 
-        public bool EsDirigido
-        {
-            get => aEsDirigido;
-            set => aEsDirigido = value;
-        }
-
         #endregion
 
         #region --- Constructores
@@ -33,167 +28,152 @@ namespace RedSocialGB.Estructuras.Grafo
         public cGrafo()
         {
             aVertices = new cLista();
-            aEsDirigido = false;
-        }
-
-        public cGrafo(bool pEsDirigido)
-        {
-            aVertices = new cLista();
-            aEsDirigido = pEsDirigido;
         }
 
         #endregion
 
         #region --- Vértices
 
-        public void AgregarVertice(object pDato)
+        // BUG ORIGINAL: agregaba cUsuario directo, debe envolver en cVertice
+        public void AgregarVertice(cUsuario pUsuario)
         {
-            Console.WriteLine("Falta implementar.");
+            if (!ExisteVertice(pUsuario.ToString()))
+                aVertices.Agregar(new cVertice(pUsuario));
         }
 
-        public void EliminarVertice(object pDato)
+        // BUG ORIGINAL: casteaba a cUsuario pero la lista guarda cVertice
+        public cVertice BuscarVertice(string pValor)
         {
-            Console.WriteLine("Falta implementar.");
+            cVertice buscado = null;
+
+            aVertices.ProcesarObjetosLista(obj =>
+            {
+                cVertice v = obj as cVertice;
+                if (v != null && v.Nodo.ToString() == pValor)
+                    buscado = v;
+            });
+
+            return buscado;
         }
 
-        public cVertice BuscarVertice(object pDato)
+        public bool ExisteVertice(string pValor)
         {
-            Console.WriteLine("Falta implementar.");
-            return null;
+            return BuscarVertice(pValor) != null;
         }
 
-        public bool ExisteVertice(object pDato)
+        public void EliminarVertice(string pValor)
         {
-            Console.WriteLine("Falta implementar.");
-            return false;
+            cVertice v = BuscarVertice(pValor);
+            if (v == null) return;
+
+            // Primero eliminar todas las aristas que apuntan a este vértice
+            aVertices.ProcesarObjetosLista(obj =>
+            {
+                cVertice otro = obj as cVertice;
+                if (otro != null && otro != v)
+                    EliminarAristaInterno(otro, pValor);
+            });
+
+            // Luego eliminar el vértice de la lista
+            aVertices.Eliminar(v);
         }
 
         public int CantidadVertices()
         {
-            Console.WriteLine("Falta implementar.");
-            return 0;
+            return aVertices.Longitud();
         }
 
         #endregion
 
         #region --- Aristas
 
-        public void AgregarArista(object pOrigen, object pDestino)
+        // BUG ORIGINAL: AgregarArista(cVertice, cVertice) tenía if() vacío
+        public bool AgregarArista(cVertice pOrigen, cVertice pDestino)
         {
-            Console.WriteLine("Falta implementar.");
+            // Evitar duplicados
+            if (ExisteArista(pOrigen.Nodo.ToString(), pDestino.Nodo.ToString()))
+                return false;
+
+            // Grafo no dirigido: agregar en ambas direcciones
+            pOrigen.ListaAdyacencia.Agregar(new cArista(pDestino));
+            pDestino.ListaAdyacencia.Agregar(new cArista(pOrigen));
+            return true;
         }
 
-        public void AgregarArista(object pOrigen, object pDestino, int pPeso)
+        // BUG ORIGINAL: el mensaje de error del destino decía Origen en vez de Destino
+        public bool AgregarArista(string pOrigen, string pDestino)
         {
-            Console.WriteLine("Falta implementar.");
+            cVertice vOrigen = BuscarVertice(pOrigen);
+            if (vOrigen == null)
+                throw new Exception($"El vértice '{pOrigen}' no existe en el grafo.");
+
+            cVertice vDestino = BuscarVertice(pDestino);
+            if (vDestino == null)
+                throw new Exception($"El vértice '{pDestino}' no existe en el grafo.");
+
+            return AgregarArista(vOrigen, vDestino);
         }
 
-        public void EliminarArista(object pOrigen, object pDestino)
+        public void EliminarArista(string pOrigen, string pDestino)
         {
-            Console.WriteLine("Falta implementar.");
+            cVertice vOrigen = BuscarVertice(pOrigen);
+            cVertice vDestino = BuscarVertice(pDestino);
+            if (vOrigen == null || vDestino == null) return;
+
+            // Grafo no dirigido: eliminar en ambas direcciones
+            EliminarAristaInterno(vOrigen, pDestino);
+            EliminarAristaInterno(vDestino, pOrigen);
         }
 
-        public bool ExisteArista(object pOrigen, object pDestino)
+        // Auxiliar: elimina la arista hacia pValorDestino dentro de un vértice
+        private void EliminarAristaInterno(cVertice pVertice, string pValorDestino)
         {
-            Console.WriteLine("Falta implementar.");
-            return false;
+            cArista encontrada = null;
+
+            pVertice.ListaAdyacencia.ProcesarObjetosLista(obj =>
+            {
+                cArista a = obj as cArista;
+                if (a != null && a.Destino.Nodo.ToString() == pValorDestino)
+                    encontrada = a;
+            });
+
+            if (encontrada != null)
+                pVertice.ListaAdyacencia.Eliminar(encontrada);
+        }
+
+        public bool ExisteArista(string pOrigen, string pDestino)
+        {
+            cVertice vOrigen = BuscarVertice(pOrigen);
+            if (vOrigen == null) return false;
+
+            bool existe = false;
+            vOrigen.ListaAdyacencia.ProcesarObjetosLista(obj =>
+            {
+                cArista a = obj as cArista;
+                if (a != null && a.Destino.Nodo.ToString() == pDestino)
+                    existe = true;
+            });
+
+            return existe;
         }
 
         public int CantidadAristas()
         {
-            Console.WriteLine("Falta implementar.");
-            return 0;
+            int total = 0;
+            aVertices.ProcesarObjetosLista(obj =>
+            {
+                cVertice v = obj as cVertice;
+                if (v != null) total += v.ListaAdyacencia.Longitud();
+            });
+            // Grafo no dirigido: cada arista se cuenta dos veces
+            return total / 2;
         }
 
-        public int Grado(object pVertice)
+        public int Grado(string pVertice)
         {
-            Console.WriteLine("Falta implementar.");
-            return 0;
+            cVertice v = BuscarVertice(pVertice);
+            return v != null ? v.Grado() : 0;
         }
-
-        #endregion
-
-        #region --- Recorridos
-
-        public void DFS(object pOrigen)
-        {
-            Console.WriteLine("Falta implementar.");
-        }
-
-        public void BFS(object pOrigen)
-        {
-            Console.WriteLine("Falta implementar.");
-        }
-
-        public bool ExisteCamino(object pOrigen, object pDestino)
-        {
-            Console.WriteLine("Falta implementar.");
-            return false;
-        }
-
-        public void LimpiarVisitados()
-        {
-            Console.WriteLine("Falta implementar.");
-        }
-
-        #endregion
-
-        #region --- Información
-
-        public void Mostrar()
-        {
-            Console.WriteLine("Falta implementar.");
-        }
-
-        public void MostrarVertices()
-        {
-            Console.WriteLine("Falta implementar.");
-        }
-
-        public void MostrarAristas()
-        {
-            Console.WriteLine("Falta implementar.");
-        }
-
-        #endregion
-
-        #region --- Utilidades
-
-        public bool EsVacio()
-        {
-            Console.WriteLine("Falta implementar.");
-            return false;
-        }
-
-        public void Vaciar()
-        {
-            Console.WriteLine("Falta implementar.");
-        }
-
-        #endregion
-
-        #region --- Algoritmos Avanzados
-
-        public void Dijkstra(object pOrigen)
-        {
-            Console.WriteLine("Falta implementar.");
-        }
-
-        public void FloydWarshall()
-        {
-            Console.WriteLine("Falta implementar.");
-        }
-
-        public void Prim()
-        {
-            Console.WriteLine("Falta implementar.");
-        }
-
-        public void Kruskal()
-        {
-            Console.WriteLine("Falta implementar.");
-        }
-
         #endregion
     }
 }

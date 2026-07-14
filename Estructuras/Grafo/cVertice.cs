@@ -1,53 +1,51 @@
-﻿using System;
+﻿using RedSocialGB.Modelos;
+using System;
 
 namespace RedSocialGB.Estructuras.Grafo
 {
-    class cVertice
+    public class cVertice
     {
-        public Object Dato { get; set; }
+        private cUsuario aNodo;
 
-        public bool Visitado { get; set; }
 
-        public cLista ListaAdyacencia { get; set; }
+        private cLista aListaAdyacencia;
 
+        //Propiedades
+        public cUsuario Nodo
+        {
+            get { return aNodo; }
+            set { aNodo = value; }
+        }
+        public cLista ListaAdyacencia
+        {
+            get { return aListaAdyacencia; }
+            set { aListaAdyacencia = value; }
+        }
         public cVertice()
         {
-            Dato = null;
-            Visitado = false;
-            ListaAdyacencia = new cLista();
+            aNodo = new cUsuario();
+
+            aListaAdyacencia = new cLista();
         }
 
-        public cVertice(Object pDato)
+        public cVertice(cUsuario Usuario)
         {
-            Dato = pDato;
-            Visitado = false;
-            ListaAdyacencia = new cLista();
-        }
-
-        //------------------------------------------------
-
-        public void AgregarArista(cVertice pDestino)
-        {
-            ListaAdyacencia.Agregar(new cArista(pDestino));
-        }
-
-        public void AgregarArista(cVertice pDestino, int pPeso)
-        {
-            ListaAdyacencia.Agregar(new cArista(pDestino, pPeso));
+            aNodo = Usuario;
+            aListaAdyacencia = new cLista();
         }
 
         //------------------------------------------------
 
         public int Grado()
         {
-            return ListaAdyacencia.Longitud();
+            return aListaAdyacencia.Longitud();
         }
 
         //------------------------------------------------
 
         public override string ToString()
         {
-            return Dato.ToString();
+            return aNodo.ToString();
         }
     }
 }
