@@ -47,9 +47,11 @@
   <ItemGroup>
     <Compile Include="Estructuras\cArbolB.cs" />
     <Compile Include="Estructuras\Grafo\cArista.cs" />
+    <Compile Include="Estructuras\Grafo\cCola.cs" />
     <Compile Include="Estructuras\Grafo\cGrafo.cs" />
     <Compile Include="Estructuras\cLista.cs" />
     <Compile Include="Estructuras\cPila.cs" />
+    <Compile Include="Estructuras\Grafo\cRecorridos.cs" />
     <Compile Include="Estructuras\Grafo\cVertice.cs" />
     <Compile Include="Formularios\FormBase.cs">
       <SubType>Form</SubType>
@@ -74,7 +76,9 @@
     <Compile Include="Modelos\cUsuario.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Servicios\ServicioAmistades.cs" />
     <Compile Include="Servicios\ServicioAutenticacion.cs" />
+    <Compile Include="Servicios\ServicioSolicitud.cs" />
     <Compile Include="Servicios\ServicioUsuarios.cs" />
     <Compile Include="Utilidades\cValidaciones.cs" />
   </ItemGroup>

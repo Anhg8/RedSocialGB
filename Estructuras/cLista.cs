@@ -159,63 +159,7 @@ namespace RedSocialGB.Estructuras
             }
         }
 
-        #endregion
-
-        #region --- Métodos pendientes
-
-        public object Buscar(object pElemento)
-        {
-            Console.WriteLine("Falta implementar.");
-            return null;
-        }
-
-        public void Reemplazar(int pPosicion, object pElemento)
-        {
-            Console.WriteLine("Falta implementar.");
-        }
-
-        public object Primero()
-        {
-            Console.WriteLine("Falta implementar.");
-            return null;
-        }
-
-        public object Ultimo()
-        {
-            Console.WriteLine("Falta implementar.");
-            return null;
-        }
-
-        public void EliminarPrimero()
-        {
-            Console.WriteLine("Falta implementar.");
-        }
-
-        public void EliminarUltimo()
-        {
-            Console.WriteLine("Falta implementar.");
-        }
-
-        public void Vaciar()
-        {
-            Console.WriteLine("Falta implementar.");
-        }
-
-        public void Invertir()
-        {
-            Console.WriteLine("Falta implementar.");
-        }
-
-        public void Limpiar()
-        {
-            Console.WriteLine("Falta implementar.");
-        }
-
-        public override string ToString()
-        {
-            Console.WriteLine("Falta implementar.");
-            return base.ToString();
-        }
+        
 
         #endregion
     }

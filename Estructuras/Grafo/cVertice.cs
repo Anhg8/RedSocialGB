@@ -5,13 +5,13 @@ namespace RedSocialGB.Estructuras.Grafo
 {
     public class cVertice
     {
-        private cUsuario aNodo;
-
-
+        private object aNodo;
+        //cada vertice tiene su lista de adyacencia
+        //lista de cAristas
         private cLista aListaAdyacencia;
 
         //Propiedades
-        public cUsuario Nodo
+        public Object Nodo
         {
             get { return aNodo; }
             set { aNodo = value; }
@@ -23,14 +23,14 @@ namespace RedSocialGB.Estructuras.Grafo
         }
         public cVertice()
         {
-            aNodo = new cUsuario();
+            aNodo = null;
 
             aListaAdyacencia = new cLista();
         }
 
-        public cVertice(cUsuario Usuario)
+        public cVertice(object obj)
         {
-            aNodo = Usuario;
+            aNodo = obj;
             aListaAdyacencia = new cLista();
         }
 

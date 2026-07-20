@@ -52,25 +52,25 @@ public class cSolicitudAmistad
 
     public bool EsRemitente(cUsuario pUsuario)
     {
-        return aRemitente.Celular == pUsuario.Celular;
+        return aRemitente.ToString() == pUsuario.ToString();
     }
 
     public bool EsDestinatario(cUsuario pUsuario)
     {
-        return aDestinatario.Celular == pUsuario.Celular;
+        return aDestinatario.ToString() == pUsuario.ToString();
     }
 
     public bool InvolucraA(cUsuario pUsuario)
     {
-        return aRemitente.Celular == pUsuario.Celular || aDestinatario.Celular == pUsuario.Celular;
+        return aRemitente.ToString() == pUsuario.ToString() || aDestinatario.ToString() == pUsuario.ToString();
     }
     public override bool Equals(object obj)
     {
         if (obj is cSolicitudAmistad otra)
         {
             return
-                aRemitente.Celular == otra.aRemitente.Celular &&
-                aDestinatario.Celular == otra.aDestinatario.Celular;
+                aRemitente.ToString() == otra.aRemitente.ToString() &&
+                aDestinatario.ToString() == otra.aDestinatario.ToString();
         }
 
         return false;
