@@ -19,15 +19,16 @@ namespace RedSocialGB.Estructuras.Grafo
             Nivel = pNivel;
         }
     }
-    public class cRecorridos:cGrafo
+    public class cRecorridos
     {
-        public cLista RecorridoBFS(string pvalor, int pNivelMaximo)
+        
+        public static cLista RecorridoBFS(object obj, int pNivelMaximo,cGrafo aGrafo)
         {
             cLista recorrido = new cLista();
 
             cLista visitados = new cLista();
 
-            cVertice inicio = BuscarVertice(pvalor);
+            cVertice inicio = aGrafo.BuscarVertice(obj.ToString());
 
             if (inicio == null)
                 return recorrido;
