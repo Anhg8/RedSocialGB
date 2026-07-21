@@ -10,7 +10,7 @@ namespace RedSocialGB.Formularios
     {
         #region *************** ATRIBUTOS ***************
 
-        private ServicioUsuarios aServicioAmistades;
+        private ServicioAmistades aServicioAmistades;
         private cUsuario aUsuario;
 
         // Labels
@@ -133,7 +133,10 @@ namespace RedSocialGB.Formularios
 
         private void BtnAmigos_Click(object sender, EventArgs e)
         {
-            // Lógica pendiente
+            FormAmigos frm_amigos = new FormAmigos(aServicioAmistades.ObtenerAmigos(aUsuario));
+            this.Hide();
+            frm_amigos.ShowDialog();
+            this.Show();
         }
 
         private void BtnCerrarSesion_Click(object sender, EventArgs e)

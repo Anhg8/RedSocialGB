@@ -75,56 +75,10 @@ namespace RedSocialGB
             g.AgregarArista("989234567", "990345678"); // Héctor ↔ Inés
             g.AgregarArista("990345678", "901456789"); // Inés   ↔ Jorge 
 
-            
-
-
-            ServicioUsuarios miServicioUsuarios= new ServicioUsuarios(s,g);
-            ServicioAmistades miServicioA = new ServicioAmistades(g);
-            cLista amigosdeAna = miServicioA.ObtenerAmigos(u1);
-            cLista amigosdeAnaBfs = miServicioA.ObtenerAmigosBFS(u1);
-            amigosdeAna.ProcesarObjetosLista(obj =>
-            {
-                cUsuario amigos = obj as cUsuario;
-                Console.WriteLine(amigos.NombreUsuario);
-            }
-            );
-            Console.WriteLine("");
-            amigosdeAnaBfs.ProcesarObjetosLista(obj =>
-            {
-                cUsuario amigos = obj as cUsuario;
-                Console.WriteLine(amigos.NombreUsuario);
-            }
-            );
-
-            Console.WriteLine("AMIGOS DE AMIGOS");
-            cLista AMIGOSDEAMIGOSANA = miServicioA.ObtenerAmigosDeAmigos(u1);
-            AMIGOSDEAMIGOSANA.ProcesarObjetosLista(obj =>
-            {
-                cUsuario u = obj as cUsuario;
-                Console.WriteLine(u.NombreUsuario);
-            });
-
-            ServicioSolicitud solicitudserv = new ServicioSolicitud(miServicioUsuarios, miServicioA);
-            string rpta = solicitudserv.EnviarSolicitud(u1.ToString(), u7.ToString());
-            Console.WriteLine(rpta);
-            cLista enviadas = solicitudserv.ObtenerSolicitudesEnviadas(u1);
-            Console.WriteLine("solicituddes enviadas para: ");
-            enviadas.ProcesarObjetosLista(obj =>
-            {
-                cUsuario u = obj as cUsuario;
-                Console.WriteLine(u.NombreUsuario);
-
-            });
-            Console.WriteLine("Sugerencias para ana");
-            cLista sugerencias = solicitudserv.ObtenerSugerencias(u1);
-            sugerencias.ProcesarObjetosLista(obj =>
-            {
-                cUsuario u = obj as cUsuario;
-                Console.WriteLine(u.NombreUsuario);
-            });
-            //ServicioAutenticacion miServicioAutenticacion = new ServicioAutenticacion(miServicioUsuarios);
-            //FormLogin frm = new FormLogin(miServicioUsuarios, miServicioAutenticacion);
-            //frm.ShowDialog();
+            ServicioUsuarios miServicioUsuarios = new ServicioUsuarios();
+            ServicioAutenticacion miServicioAutenticacion = new ServicioAutenticacion(miServicioUsuarios);
+            FormLogin frm = new FormLogin(miServicioUsuarios, miServicioAutenticacion);
+            frm.ShowDialog();
         }
     }
 }
