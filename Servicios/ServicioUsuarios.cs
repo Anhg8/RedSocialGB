@@ -98,10 +98,32 @@ namespace RedSocialGB.Servicios
         // -------------------------------------------------
         public cUsuario BuscarPorCelular(string pCelular)
         {
-            return aArbolUsuarios.Buscar(pCelular,u=>u.Celular);
+            return (aArbolUsuarios.Buscar(pCelular,u =>(u as cUsuario).Celular)) as cUsuario;
         }
 
         // -------------------------------------------------
+        public cLista BuscarUsuarios(string pNombre)
+        {
+            cLista encontrados = new cLista();
+            aArbolUsuarios.Recorrer(obj =>
+            {
+                cUsuario usuario = obj as cUsuario;
+
+                if (usuario == null)
+                    return;
+                //comparamos si el nombre a buscar esta contenido, en apellidos, nombres o nombre de usuario, si es asi lo agregamos a la lista de encontrados
+                if (usuario.NombreUsuario.ToLower().Contains(pNombre.ToLower()) ||
+                    usuario.Nombres.ToLower().Contains(pNombre.ToLower()) ||
+                    usuario.Apellidos.ToLower().Contains(pNombre.ToLower()))
+                {
+                    encontrados.Agregar(usuario);
+                }
+            });
+
+            return encontrados;
+        
+        }
+        
         public bool ExisteCelular(string pCelular)
         {
             return BuscarPorCelular(pCelular) != null;

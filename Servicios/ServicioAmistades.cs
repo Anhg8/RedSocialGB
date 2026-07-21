@@ -75,14 +75,14 @@ namespace RedSocialGB.Servicios
             return aGrafo.ExisteArista(pUsuario1.ToString(), pUsuario2.ToString());
         }
 
-        
-        public cLista ObtenerAmigosDeAmigos(cUsuario pUsuario)
+        //Obtiene los amigos de amigos, eso en bfs es busqueda hasta nivel 2, nivel 1 son los amigos directos.
+        public cLista ObtenerAmigosDeAmigos(string pvalor)
         {
-            cLista recorrido = BFS.RecorridoBFS(pUsuario, 2);
+            cLista recorrido = BFS.RecorridoBFS(pvalor, 2);
 
             cLista resultado = new cLista();
 
-            cLista amigos = aGrafo.ObtenerAmigos(pUsuario.ToString());
+            cLista amigos = ObtenerAmigos(pvalor);
 
             recorrido.ProcesarObjetosLista(obj =>
             {
@@ -90,15 +90,15 @@ namespace RedSocialGB.Servicios
 
                 if (v == null)
                     return;
-
+                //casteamos el nodo a cUsuario
                 cUsuario u = (cUsuario)v.Nodo;
 
-                if (u.ToString() == pUsuario.ToString())
+                if (u.ToString() == pvalor)
                     return;
-
+                //si ya son amigos , lo ignora y no lo agrega para evitar duplicados
                 if (amigos.Existe(u))
                     return;
-
+                //si no existe en la lista de resultado, lo agrega
                 if (!resultado.Existe(u))
                     resultado.Agregar(u);
             });
@@ -107,7 +107,25 @@ namespace RedSocialGB.Servicios
         }
 
         // -------------------------------------------------
-        
+        public cLista ObtenerAmigos(string pvalor)
+        {
+            cLista amigos = new cLista();
+
+            cVertice vertice = aGrafo.BuscarVertice(pvalor);
+
+            if (vertice == null)
+                return amigos;
+
+            vertice.ListaAdyacencia.ProcesarObjetosLista(O =>
+            {
+                cArista arista = O as cArista;
+
+                if (arista != null)
+                    amigos.Agregar(arista.Destino.Nodo);
+            });
+
+            return amigos;
+        }
 
 
         #endregion

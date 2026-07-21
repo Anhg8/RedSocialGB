@@ -114,6 +114,7 @@ namespace RedSocialGB.Servicios
         }
 
         //-------------------------------------------------------
+        
         public cSolicitudAmistad BuscarSolicitud(string pCelularRemitente, string pCelularDestinatario)
         {
             cSolicitudAmistad s = null;
@@ -143,22 +144,43 @@ namespace RedSocialGB.Servicios
         }
 
         //-------------------------------------------------------
-        public List<cSolicitudAmistad> ObtenerSolicitudesPendientes(
+        //Lista de solicitudes donde el usuario que inicie sesion es el destinatario
+        public cLista ObtenerSolicitudesPendientes(
             string pCelular)
         {
-            //return aSolicitudesPendientes
-                //.Where(s => s.Destinatario.Celular == pCelular)
-                //.ToList();
+            cLista pendientes = new cLista();
+            aSolicitudesPendientes.ProcesarObjetosLista(obj =>
+            {
+                cSolicitudAmistad solicitud = obj as cSolicitudAmistad;
+                if (solicitud == null)
+                    return;
+                if (solicitud.Destinatario.Celular == pCelular)
+                {
+                    pendientes.Agregar(solicitud.Remitente);
+                }
+            });
+            return pendientes;
         }
 
         //-------------------------------------------------------
-        public List<cSolicitudAmistad> ObtenerSolicitudesEnviadas(
+        //Lista de solicitudes donde el usuario que inicia sesion es el que envia solicitud
+        public cLista ObtenerSolicitudesEnviadas(
             string pCelular)
         {
-            //return aSolicitudesPendientes
-                //.Where(s => s.Remitente.Celular == pCelular)
-                //.ToList();
+            cLista enviadas = new cLista();
+            aSolicitudesPendientes.ProcesarObjetosLista(obj =>
+            {
+                cSolicitudAmistad solicitud = obj as cSolicitudAmistad;
+                if (solicitud == null)
+                    return;
+                if (solicitud.Remitente.Celular == pCelular)
+                {
+                    enviadas.Agregar(solicitud.Destinatario);
+                }
+            });
+            return enviadas;
         }
+        //Metodo que devuelve lista de sugerencias, amigos de amigos y que no tenga solicitud pendiente
         public cLista ObtenerSugerencias(cUsuario pUsuario)
         {
             cLista amigosDeAmigos = aServicioAmistades.ObtenerAmigosDeAmigos(pUsuario);
@@ -174,7 +196,7 @@ namespace RedSocialGB.Servicios
                 {
                     return;
                 }
-                if (!ExisteSolicitud(pUsuario.ToString(), u.ToString()){
+                if (!ExisteSolicitud(pUsuario.ToString(), u.ToString())){
                     sugerencias.Agregar(u);
                 }
             });

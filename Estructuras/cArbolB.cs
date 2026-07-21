@@ -9,7 +9,7 @@ namespace RedSocialGB.Estructuras
 {
     public class NodoB
     {
-        public List<cUsuario> Claves { get; set; } = new List<cUsuario>();
+        public List<object> Claves { get; set; } = new List<object>();
         public List<NodoB> Hijos { get; set; } = new List<NodoB>();
         public bool EsHoja { get; set; }
 
@@ -36,7 +36,7 @@ namespace RedSocialGB.Estructuras
         }
 
         // Inserción
-        public void Insertar(cUsuario clave)
+        public void Insertar(object clave)
         {
             if (raiz.Claves.Count == (2 * t - 1))
             {
@@ -68,23 +68,23 @@ namespace RedSocialGB.Estructuras
             padre.Claves.Insert(indice, hijo.Claves[t - 1]);
             hijo.Claves.RemoveAt(t - 1);
         }
-        private void InsertarNoLleno(NodoB nodo, cUsuario clave)
+        private void InsertarNoLleno(NodoB nodo, object clave)
         {
             int i = nodo.Claves.Count - 1;
             if (nodo.EsHoja)
             {
                 nodo.Claves.Add(clave);
-                nodo.Claves.Sort((x, y) => x.Celular.CompareTo(y.Celular));
+                nodo.Claves.Sort((x, y) => x.ToString().CompareTo(y.ToString()));
             }
             else
             {
 
-                while (i >= 0 && clave.Celular.CompareTo(nodo.Claves[i].Celular) < 0) i--;
+                while (i >= 0 && clave.ToString().CompareTo(nodo.Claves[i].ToString()) < 0) i--;
                 i++;
                 if (nodo.Hijos[i].Claves.Count == (2 * t - 1))
                 {
                     DividirHijo(nodo, i, nodo.Hijos[i]);
-                    if (clave.Celular.CompareTo(nodo.Claves[i].Celular) > 0) i++;
+                    if (clave.ToString().CompareTo(nodo.Claves[i].ToString()) > 0) i++;
                 }
                 InsertarNoLleno(nodo.Hijos[i], clave);
             }
@@ -101,7 +101,7 @@ namespace RedSocialGB.Estructuras
 
         private void EliminarInterno(NodoB nodo, string clave)
         {
-            int idx = nodo.Claves.FindIndex(c => c.Celular == clave.ToString());
+            int idx = nodo.Claves.FindIndex(c => c.ToString() == clave.ToString());
 
             if (idx != -1) // clave encontrada en este nodo
             {
@@ -115,15 +115,15 @@ namespace RedSocialGB.Estructuras
                     // caso 2: eliminar en nodo interno
                     if (idx < nodo.Hijos.Count && nodo.Hijos[idx].Claves.Count >= t)
                     {
-                        cUsuario pred = ObtenerPredecesor(nodo.Hijos[idx]);
+                        object pred = ObtenerPredecesor(nodo.Hijos[idx]);
                         nodo.Claves[idx] = pred;
-                        EliminarInterno(nodo.Hijos[idx], pred.Celular);
+                        EliminarInterno(nodo.Hijos[idx], pred.ToString());
                     }
                     else if (idx + 1 < nodo.Hijos.Count && nodo.Hijos[idx + 1].Claves.Count >= t)
                     {
-                        cUsuario succ = ObtenerSucesor(nodo.Hijos[idx + 1]);
+                        object succ = ObtenerSucesor(nodo.Hijos[idx + 1]);
                         nodo.Claves[idx] = succ;
-                        EliminarInterno(nodo.Hijos[idx + 1], succ.Celular);
+                        EliminarInterno(nodo.Hijos[idx + 1], succ.ToString());
                     }
                     else
                     {
@@ -139,7 +139,7 @@ namespace RedSocialGB.Estructuras
                 if (nodo.EsHoja) return;
 
                 int i = 0;
-                while (i < nodo.Claves.Count && clave.ToString().CompareTo(nodo.Claves[i].Celular) > 0) i++;
+                while (i < nodo.Claves.Count && clave.ToString().CompareTo(nodo.Claves[i].ToString()) > 0) i++;
 
                 if (i >= nodo.Hijos.Count) return; // 🔹 validación extra
 
@@ -157,14 +157,14 @@ namespace RedSocialGB.Estructuras
             }
         }
 
-        private cUsuario ObtenerPredecesor(NodoB nodo)
+        private object ObtenerPredecesor(NodoB nodo)
         {
             while (!nodo.EsHoja) nodo = nodo.Hijos[nodo.Hijos.Count - 1];
             return nodo.Claves[nodo.Claves.Count - 1];
         }
 
-        private cUsuario ObtenerSucesor(NodoB nodo)
-        {
+        private object ObtenerSucesor(NodoB nodo)
+        {   
             while (!nodo.EsHoja) nodo = nodo.Hijos[0];
             return nodo.Claves[0];
         }
@@ -228,12 +228,12 @@ namespace RedSocialGB.Estructuras
             if (!hermano.EsHoja)
                 hermano.Hijos.RemoveAt(0);
         }
-        public cUsuario Buscar(string id, Func<cUsuario,string> Selector)
+        public object Buscar(string id, Func<object,string> Selector)
         {
             return BuscarInterno(Raiz,id,Selector);
         }
 
-        public cUsuario BuscarInterno(NodoB nodo, string id, Func<cUsuario, string> Selector)
+        public object BuscarInterno(NodoB nodo, string id, Func<object, string> Selector)
         {
             int i = 0;
 
@@ -251,7 +251,34 @@ namespace RedSocialGB.Estructuras
             return BuscarInterno(nodo.Hijos[i], id, Selector);
         }
 
+        //------------------------------------------------
+        public void Recorrer(Action<object> accion)
+        {
+            RecorrerInterno(raiz, accion);
+        }
 
+        //------------------------------------------------
+        private void RecorrerInterno(NodoB nodo, Action<object> accion)
+        {
+            if (nodo == null)
+                return;
+
+            int i;
+
+            for (i = 0; i < nodo.Claves.Count; i++)
+            {
+                // Recorrer hijo izquierdo
+                if (!nodo.EsHoja)
+                    RecorrerInterno(nodo.Hijos[i], accion);
+
+                // Procesar clave
+                accion(nodo.Claves[i]);
+            }
+
+            // Recorrer último hijo
+            if (!nodo.EsHoja)
+                RecorrerInterno(nodo.Hijos[i], accion);
+        }
 
     }
 }

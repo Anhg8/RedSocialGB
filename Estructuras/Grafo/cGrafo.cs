@@ -172,25 +172,7 @@ namespace RedSocialGB.Estructuras.Grafo
             EliminarAristaInterno(vOrigen, pDestino);
             EliminarAristaInterno(vDestino, pOrigen);
         }
-        public cLista ObtenerAmigos(string obj)
-        {
-            cLista amigos = new cLista();
-
-            cVertice vertice =BuscarVertice(obj);
-
-            if (vertice == null)
-                return amigos;
-
-            vertice.ListaAdyacencia.ProcesarObjetosLista(O =>
-            {
-                cArista arista = O as cArista;
-
-                if (arista != null)
-                    amigos.Agregar(arista.Destino.Nodo);
-            });
-
-            return amigos;
-        }
+        
         
         #endregion
     }
