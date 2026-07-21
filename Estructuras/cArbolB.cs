@@ -38,6 +38,14 @@ namespace RedSocialGB.Estructuras
         // Inserción
         public void Insertar(object clave)
         {
+            if (clave == null)
+            {
+                return;
+            }
+            if (Buscar(clave.ToString(), x => x.ToString()) != null)
+            {
+                return; // clave ya existe, no insertar duplicados
+            }
             if (raiz.Claves.Count == (2 * t - 1))
             {
                 NodoB nuevaRaiz = new NodoB(false);

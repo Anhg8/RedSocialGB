@@ -12,7 +12,7 @@ namespace RedSocialGB.Servicios
     public class ServicioAmistades
     {
         #region *************** ATRIBUTOS ***************
-        private cRecorridos aBFS;
+        
         private cGrafo aGrafo;
 
         #endregion
@@ -21,11 +21,6 @@ namespace RedSocialGB.Servicios
         {
             get => aGrafo;
             set => aGrafo = value;
-        }
-        public cRecorridos BFS
-        {
-            get => aBFS;
-            set => aBFS = value;
         }
 
         #endregion
@@ -75,28 +70,69 @@ namespace RedSocialGB.Servicios
             return aGrafo.ExisteArista(pUsuario1.ToString(), pUsuario2.ToString());
         }
 
-        //Obtiene los amigos de amigos, eso en bfs es busqueda hasta nivel 2, nivel 1 son los amigos directos.
-        public cLista ObtenerAmigosDeAmigos(string pvalor)
+        // -------------------------------------------------
+        public cLista ObtenerAmigos(cUsuario usuario)
         {
-            cLista recorrido = BFS.RecorridoBFS(pvalor, 2);
+            cLista amigos = new cLista();
+
+            cVertice vertice = aGrafo.BuscarVertice(usuario.ToString());
+
+            if (vertice == null)
+                return amigos;
+
+            vertice.ListaAdyacencia.ProcesarObjetosLista(obj =>
+            {
+                cArista arista = obj as cArista;
+
+                if (arista != null)
+                    amigos.Agregar(arista.Destino.Nodo as cUsuario);
+            });
+
+            return amigos;
+        }
+        public cLista ObtenerAmigosBFS(cUsuario usuario)
+        {
+            cLista amigos = new cLista();
+            cLista recorrido = cRecorridos.RecorridoBFS(usuario, 1, aGrafo);
+            recorrido.ProcesarObjetosLista(O =>
+            {
+                cVertice v = O as cVertice;
+                if (v == null)
+                    return;
+                cUsuario u = (cUsuario)v.Nodo;
+                if (u.ToString() == usuario.ToString())
+                    return;
+                amigos.Agregar(u);
+            });
+            return amigos;
+        }
+
+        // -------------------------------------------------
+
+        //Obtiene los amigos de amigos, eso en bfs es busqueda hasta nivel 2, nivel 1 son los amigos directos.
+        public cLista ObtenerAmigosDeAmigos(cUsuario usuario)
+        {
+            cLista recorrido = cRecorridos.RecorridoBFS(usuario, 2,aGrafo);
 
             cLista resultado = new cLista();
 
-            cLista amigos = ObtenerAmigos(pvalor);
+            cLista amigos = ObtenerAmigos(usuario);
 
-            recorrido.ProcesarObjetosLista(obj =>
+            recorrido.ProcesarObjetosLista(O =>
             {
-                cVertice v = obj as cVertice;
+                cVertice v = O as cVertice;
 
                 if (v == null)
                     return;
                 //casteamos el nodo a cUsuario
                 cUsuario u = (cUsuario)v.Nodo;
 
-                if (u.ToString() == pvalor)
+                if (u.ToString() == usuario.ToString())
                     return;
+                
+
                 //si ya son amigos , lo ignora y no lo agrega para evitar duplicados
-                if (amigos.Existe(u))
+                if (amigos.Existe(u)) 
                     return;
                 //si no existe en la lista de resultado, lo agrega
                 if (!resultado.Existe(u))
@@ -105,28 +141,6 @@ namespace RedSocialGB.Servicios
 
             return resultado;
         }
-
-        // -------------------------------------------------
-        public cLista ObtenerAmigos(string pvalor)
-        {
-            cLista amigos = new cLista();
-
-            cVertice vertice = aGrafo.BuscarVertice(pvalor);
-
-            if (vertice == null)
-                return amigos;
-
-            vertice.ListaAdyacencia.ProcesarObjetosLista(O =>
-            {
-                cArista arista = O as cArista;
-
-                if (arista != null)
-                    amigos.Agregar(arista.Destino.Nodo);
-            });
-
-            return amigos;
-        }
-
 
         #endregion
     }

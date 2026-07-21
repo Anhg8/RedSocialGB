@@ -145,8 +145,7 @@ namespace RedSocialGB.Servicios
 
         //-------------------------------------------------------
         //Lista de solicitudes donde el usuario que inicie sesion es el destinatario
-        public cLista ObtenerSolicitudesPendientes(
-            string pCelular)
+        public cLista ObtenerSolicitudesPendientes(cUsuario pUsuario)
         {
             cLista pendientes = new cLista();
             aSolicitudesPendientes.ProcesarObjetosLista(obj =>
@@ -154,7 +153,7 @@ namespace RedSocialGB.Servicios
                 cSolicitudAmistad solicitud = obj as cSolicitudAmistad;
                 if (solicitud == null)
                     return;
-                if (solicitud.Destinatario.Celular == pCelular)
+                if (solicitud.Destinatario.Celular == pUsuario.ToString())
                 {
                     pendientes.Agregar(solicitud.Remitente);
                 }
@@ -164,8 +163,7 @@ namespace RedSocialGB.Servicios
 
         //-------------------------------------------------------
         //Lista de solicitudes donde el usuario que inicia sesion es el que envia solicitud
-        public cLista ObtenerSolicitudesEnviadas(
-            string pCelular)
+        public cLista ObtenerSolicitudesEnviadas(cUsuario pUsuario)
         {
             cLista enviadas = new cLista();
             aSolicitudesPendientes.ProcesarObjetosLista(obj =>
@@ -173,7 +171,7 @@ namespace RedSocialGB.Servicios
                 cSolicitudAmistad solicitud = obj as cSolicitudAmistad;
                 if (solicitud == null)
                     return;
-                if (solicitud.Remitente.Celular == pCelular)
+                if (solicitud.Remitente.ToString() == pUsuario.ToString())
                 {
                     enviadas.Agregar(solicitud.Destinatario);
                 }

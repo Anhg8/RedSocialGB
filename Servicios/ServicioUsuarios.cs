@@ -1,4 +1,5 @@
 ﻿using RedSocialGB.Estructuras;
+using RedSocialGB.Estructuras.Grafo;
 using RedSocialGB.Modelos;
 using RedSocialGB.Utilidades;
 using System;
@@ -10,16 +11,26 @@ namespace RedSocialGB.Servicios
         #region *************** ATRIBUTOS ***************
 
         private cArbolB aArbolUsuarios;
+        private cGrafo aGrafoUsuarios;
 
         #endregion
 
         #region *************** CONSTRUCTORES ***************
 
-        public ServicioUsuarios(cArbolB pArbolUsuarios)
+        public ServicioUsuarios()
+        {
+            aGrafoUsuarios = new cGrafo();
+            aArbolUsuarios = new cArbolB(20);
+        }
+        public ServicioUsuarios(cArbolB pArbolUsuarios,cGrafo pGrafoU)
         {
             aArbolUsuarios = pArbolUsuarios;
+            aGrafoUsuarios= pGrafoU;
         }
-
+        #region *****************PROPIEDADES*******************
+        public cArbolB ArbolUsuarios { get => aArbolUsuarios; set => aArbolUsuarios = value; }
+        public cGrafo GrafoUsuarios { get => aGrafoUsuarios; set => aGrafoUsuarios = value; }
+        #endregion
         #endregion
 
         #region *************** MÉTODOS ***************
@@ -72,28 +83,12 @@ namespace RedSocialGB.Servicios
 
             // Insertar en el Árbol B
             aArbolUsuarios.Insertar(nuevoUsuario);
+            aGrafoUsuarios.AgregarVertice(nuevoUsuario);
+
 
             return "Usuario registrado correctamente.";
         }
-        // -------------------------------------------------
-        public string ModificarUsuario(string pCelular,string pNombreUsuario)
-        {
-            // Buscar usuario
-            cUsuario usuario = BuscarPorCelular(pCelular);
 
-            if (usuario == null)
-                return "El usuario no existe.";
-
-            // Validaciones
-            if (!cValidaciones.ValidarNombreUsuario(pNombreUsuario))
-                return "Debe ingresar un nombre de usuario válido.";
-
-
-            // Modificar datos
-            usuario.NombreUsuario = pNombreUsuario;
-
-            return "Usuario modificado correctamente.";
-        }
 
         // -------------------------------------------------
         public cUsuario BuscarPorCelular(string pCelular)
@@ -140,12 +135,7 @@ namespace RedSocialGB.Servicios
             return true;
         }
 
-        // -------------------------------------------------
-        public cArbolB ObtenerArbol()
-        {
-            return aArbolUsuarios;
-        }
-
+    
         #endregion
     }
 }
