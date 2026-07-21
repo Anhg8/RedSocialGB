@@ -181,7 +181,7 @@ namespace RedSocialGB.Servicios
             return enviadas;
         }
         //Metodo que devuelve lista de sugerencias, amigos de amigos y que no tenga solicitud pendiente
-        public cLista ObtenerSugerencias(cUsuario pUsuario)
+        public cLista ObtenerSugerencias(string pUsuario)
         {
             cLista amigosDeAmigos = aServicioAmistades.ObtenerAmigosDeAmigos(pUsuario);
             cLista sugerencias=new cLista();

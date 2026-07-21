@@ -126,20 +126,10 @@ namespace RedSocialGB.Formularios
                 return;
             }
 
-            lblMensaje.ForeColor = Color.Green;
-            lblMensaje.Text = "Bienvenido " + usuario.Nombres + ".";
-
-            MessageBox.Show(
-                "Bienvenido " + usuario.Nombres,
-                "Inicio de sesión",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information);
-
-            // Aquí abrirás el formulario principal
-            // FormPrincipal frm = new FormPrincipal(usuario, aServicioUsuarios);
-            // this.Hide();
-            // frm.ShowDialog();
-            // this.Show();
+            FormPrincipal frm = new FormPrincipal(usuario);
+            this.Hide();
+            frm.ShowDialog();
+            this.Show();
         }
 
         private void BtnRegistrarse_Click(object sender, EventArgs e)
