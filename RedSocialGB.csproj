@@ -92,6 +92,7 @@
     <Compile Include="Modelos\cAmistad.cs" />
     <Compile Include="Modelos\cSolicitudAmistad.cs" />
     <Compile Include="Modelos\cUsuario.cs" />
+    <Compile Include="Nucleo\RedSocialGB.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Servicios\ServicioAmistades.cs" />
