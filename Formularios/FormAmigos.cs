@@ -1,60 +1,101 @@
 ﻿using RedSocialGB.Estructuras;
+using RedSocialGB.Modelos;
+using RedSocialGB.Nucleo;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace RedSocialGB.Formularios
 {
     public partial class FormAmigos : FormBase
     {
-        private cLista aListaAmigos = new cLista();
-        private ListBox lstAmigos;
+        #region *************** ATRIBUTOS ***************
 
+        private Redsocial aSistema;
+
+        private ListBox lstAmigos;
+        private Label lblTitulo;
         private Button btnCancelar;
 
-        public FormAmigos(cLista pListaAmigos)
-        {
-            aListaAmigos = pListaAmigos;
-            InitializeComponent();
-            CrearListaAmigosControl();
-            CargarAmigos();
+        #endregion
 
-        }
-        public void ConfigurarControles()
+        #region *************** CONSTRUCTOR ***************
+
+        public FormAmigos(Redsocial pSistema)
         {
-            btnCancelar = CrearBoton("Cancelar", 35, 150, 150, 20, Color.FromArgb(40, 167, 69), Color.White);
-            btnCancelar.Click += BtnCancelar_Click;
+            InitializeComponent();
+
+            aSistema = pSistema;
+
+            Text = "Red Social GB - Amigos";
+
+            ConfigurarControles();
+            CargarAmigos();
         }
-        private void CrearListaAmigosControl()
+
+        #endregion
+
+        #region *************** CONFIGURACIÓN ***************
+
+        private void ConfigurarControles()
         {
+            ClientSize = new Size(430, 500);
+
+            lblTitulo = CrearTitulo("MIS AMIGOS", 20);
+
             lstAmigos = new ListBox();
-            lstAmigos.Location = new Point(10, 10);
-            lstAmigos.Size = new Size(400, 400);
+            lstAmigos.Location = new Point(MargenIzquierdo, 80);
+            lstAmigos.Size = new Size(360, 350);
+            lstAmigos.Font = new Font("Segoe UI", 10);
+            lstAmigos.BorderStyle = BorderStyle.FixedSingle;
             lstAmigos.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             Controls.Add(lstAmigos);
+
+            btnCancelar = CrearBoton(
+                "Cerrar",
+                MargenIzquierdo,
+                445,
+                150,
+                35,
+                Color.FromArgb(150, 150, 150),
+                Color.White);
+
+            btnCancelar.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            btnCancelar.Click += BtnCancelar_Click;
         }
+
+        #endregion
+
+        #region *************** MÉTODOS ***************
+
         private void CargarAmigos()
         {
             lstAmigos.Items.Clear();
-            if (aListaAmigos == null || aListaAmigos.EsVacia()) return;
 
-            aListaAmigos.ProcesarObjetosLista(obj =>
+            cLista amigos = aSistema.ServicioAmistades.ObtenerAmigos(aSistema.UsuarioActual);
+
+            if (amigos == null || amigos.EsVacia())
             {
-                if (obj is Modelos.cUsuario u)
-                    lstAmigos.Items.Add($"{u.NombreUsuario} — {u.Nombres} {u.Apellidos}");
-                else
-                    lstAmigos.Items.Add(obj?.ToString() ?? "(nulo)");
+                lstAmigos.Items.Add("Aún no tienes amigos agregados.");
+                return;
+            }
+
+            amigos.ProcesarObjetosLista(obj =>
+            {
+                if (obj is cUsuario u)
+                    lstAmigos.Items.Add($"{u.NombreUsuario}  —  {u.Nombres} {u.Apellidos}");
             });
         }
+
+        #endregion
+
+        #region *************** EVENTOS ***************
+
         private void BtnCancelar_Click(object sender, EventArgs e)
         {
             Close();
         }
+
+        #endregion
     }
 }

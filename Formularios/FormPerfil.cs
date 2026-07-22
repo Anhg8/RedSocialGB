@@ -16,7 +16,6 @@ namespace RedSocialGB.Formularios
         private Label lblTitulo;
         private Label lblNombreUsuario;
         private Label lblNombres;
-        private Label lblApellidos;
         private Label lblFechaNacimiento;
         private Label lblCelular;
 
@@ -40,24 +39,55 @@ namespace RedSocialGB.Formularios
         #endregion
 
         #region *************** CONFIGURACIÓN ***************
+
         private void ConfigurarControles()
         {
-            int x = 35;
-            int y = 30;
-            lblNombreUsuario = CrearLabel($"Nombre de usuario: {aUsuario.NombreUsuario}", x, y);
-            y += 22;
-            lblNombres = CrearLabel($"Nombre completo: {aUsuario.Nombres} {aUsuario.Apellidos}", x, y);
-            y += 40;
-            lblCelular = CrearLabel($"Numero celular: {aUsuario.Celular}", x, y);
-            y += 40;
-            btnCancelar = CrearBoton("Cancelar", x, y, 150, 20, Color.FromArgb(40, 167, 69), Color.White);
+            int x = MargenIzquierdo;
+            int y = 25;
+
+            ClientSize = new Size(430, 340);
+
+            lblTitulo = CrearTitulo("MI PERFIL", y);
+
+            y += 70;
+
+            lblNombreUsuario = CrearLabel($"Nombre de usuario:  {aUsuario.NombreUsuario}", x, y);
+            y += 35;
+
+            lblNombres = CrearLabel($"Nombre completo:  {aUsuario.Nombres} {aUsuario.Apellidos}", x, y);
+            y += 35;
+
+            lblFechaNacimiento = CrearLabel(
+                $"Fecha de nacimiento:  {aUsuario.FechaNacimiento:dd/MM/yyyy}  ({aUsuario.GetEdad()} años)",
+                x, y);
+            y += 35;
+
+            lblCelular = CrearLabel($"Número celular:  {aUsuario.Celular}", x, y);
+            y += 55;
+
+            btnCancelar = CrearBoton(
+                "Cerrar",
+                x,
+                y,
+                150,
+                38,
+                Color.FromArgb(150, 150, 150),
+                Color.White);
+
             btnCancelar.Click += BtnCancelar_Click;
+
+            ClientSize = new Size(430, y + 70);
         }
+
+        #endregion
+
+        #region *************** EVENTOS ***************
+
         private void BtnCancelar_Click(object sender, EventArgs e)
         {
             Close();
         }
-        
+
         #endregion
     }
 }

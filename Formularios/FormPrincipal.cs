@@ -1,5 +1,6 @@
 ﻿using RedSocialGB.Estructuras.Grafo;
 using RedSocialGB.Modelos;
+using RedSocialGB.Nucleo;
 using RedSocialGB.Servicios;
 using System;
 using System.Drawing;
@@ -12,8 +13,7 @@ namespace RedSocialGB.Formularios
     {
         #region *************** ATRIBUTOS ***************
 
-        private ServicioAmistades aServicioAmistades;
-        private cUsuario aUsuario;
+        private Redsocial aSistema;
 
         // Labels
         private Label lblBienvenida;
@@ -38,10 +38,12 @@ namespace RedSocialGB.Formularios
 
         #region *************** CONSTRUCTOR ***************
 
-        public FormPrincipal(cUsuario pUsuario)
+        public FormPrincipal(Redsocial pSistema)
         {
             InitializeComponent();
-            aUsuario = pUsuario;
+
+            aSistema = pSistema;
+
             Text = "Red Social GB - Inicio";
 
             ConfigurarControles();
@@ -55,60 +57,75 @@ namespace RedSocialGB.Formularios
         {
             ClientSize = new Size(900, 540);
 
+            int margenIzq = MargenIzquierdo;
+            int margenDer = 570;
+            int anchoDerecho = 900 - margenDer - MargenIzquierdo; // 295
+
+            // ---------- ENCABEZADO ----------
+
             // Buscador (gris)
-            txtBuscador = CrearTextBox(MargenIzquierdo, 30, 430, AltoTextBox);
+            txtBuscador = CrearTextBox(margenIzq, 30, margenDer - margenIzq - 25, AltoTextBox);
             txtBuscador.BackColor = Color.FromArgb(224, 224, 224);
 
             // Perfil (arriba derecha)
-            lblBienvenida = CrearLabel($"Bienvenido, {aUsuario.Nombres}", 570, 15);
-
             picPerfil = new PictureBox();
-            picPerfil.Size = new Size(90, 90);
-            picPerfil.Location = new Point(650, 40);
+            picPerfil.Size = new Size(70, 70);
+            picPerfil.Location = new Point(900 - MargenIzquierdo - 70, 25);
             picPerfil.BorderStyle = BorderStyle.FixedSingle;
             picPerfil.SizeMode = PictureBoxSizeMode.CenterImage;
             picPerfil.BackColor = Color.White;
             Controls.Add(picPerfil);
 
-            // Botones azules (menú)
-            int x = MargenIzquierdo;
-            int anchoBtn = 260;
+            lblBienvenida = new Label();
+            lblBienvenida.Text = $"Bienvenido, {aSistema.UsuarioActual.Nombres}";
+            lblBienvenida.Font = new Font("Segoe UI", 9, FontStyle.Bold);
+            lblBienvenida.AutoSize = false;
+            lblBienvenida.TextAlign = ContentAlignment.MiddleRight;
+            lblBienvenida.Size = new Size(picPerfil.Left - margenDer, 30);
+            lblBienvenida.Location = new Point(margenDer, picPerfil.Top + (picPerfil.Height - 30) / 2);
+            Controls.Add(lblBienvenida);
+
+            // ---------- BLOQUE MENÚ (izquierda) ----------
+
+            int x = margenIzq;
+            int anchoBtn = margenDer - margenIzq - 25; // mismo ancho que el buscador
             int altoBtn = 45;
-            int y = 150;
+            int espaciado = 15;
+            int yMenu = 150;
 
-            btnPerfil = CrearBoton("Perfil", x, y, anchoBtn, altoBtn,
+            btnPerfil = CrearBoton("Perfil", x, yMenu, anchoBtn, altoBtn,
                 Color.FromArgb(51, 51, 204), Color.White);
+            yMenu += altoBtn + espaciado;
 
-            y += 55;
-
-            btnSolicitudes = CrearBoton("Solicitudes pendientes", x, y, anchoBtn, altoBtn,
+            btnSolicitudes = CrearBoton("Solicitudes pendientes", x, yMenu, anchoBtn, altoBtn,
                 Color.FromArgb(51, 51, 204), Color.White);
+            yMenu += altoBtn + espaciado;
 
-            y += 55;
-
-            btnAmigos = CrearBoton("Amigos", x, y, anchoBtn, altoBtn,
+            btnAmigos = CrearBoton("Amigos", x, yMenu, anchoBtn, altoBtn,
                 Color.FromArgb(51, 51, 204), Color.White);
+            yMenu += altoBtn + espaciado * 2;
 
-            y += 75;
-
-            // Botón rojo (cerrar sesión)
-            btnCerrarSesion = CrearBoton("Cerrar sesión", x, y, anchoBtn, altoBtn,
+            btnCerrarSesion = CrearBoton("Cerrar sesión", x, yMenu, anchoBtn, altoBtn,
                 Color.FromArgb(220, 30, 30), Color.White);
 
-            // Panel de sugerencias
+            // ---------- BLOQUE SUGERENCIAS (derecha) ----------
+
             panelSugerencias = new Panel();
-            panelSugerencias.Location = new Point(570, 150);
-            panelSugerencias.Size = new Size(260, 300);
+            panelSugerencias.Location = new Point(margenDer, 150);
+            panelSugerencias.Size = new Size(anchoDerecho, yMenu + altoBtn - 150);
             panelSugerencias.BorderStyle = BorderStyle.FixedSingle;
             panelSugerencias.BackColor = Color.White;
             Controls.Add(panelSugerencias);
 
             lblSugerencias = new Label();
-            lblSugerencias.Text = "sugerencias";
+            lblSugerencias.Text = "Sugerencias";
             lblSugerencias.Font = new Font("Segoe UI", 11, FontStyle.Bold);
+            lblSugerencias.ForeColor = Color.FromArgb(60, 60, 60);
             lblSugerencias.AutoSize = true;
-            lblSugerencias.Location = new Point(10, 8);
+            lblSugerencias.Location = new Point(12, 10);
             panelSugerencias.Controls.Add(lblSugerencias);
+
+            // ---------- EVENTOS ----------
 
             btnPerfil.Click += BtnPerfil_Click;
             btnSolicitudes.Click += BtnSolicitudes_Click;
@@ -122,7 +139,7 @@ namespace RedSocialGB.Formularios
 
         private void BtnPerfil_Click(object sender, EventArgs e)
         {
-            FormPerfil frm_perfil = new FormPerfil(aUsuario);
+            FormPerfil frm_perfil = new FormPerfil(aSistema.UsuarioActual);
             this.Hide();
             frm_perfil.ShowDialog();
             this.Show();
@@ -135,9 +152,9 @@ namespace RedSocialGB.Formularios
 
         private void BtnAmigos_Click(object sender, EventArgs e)
         {
-            FormAmigos frm_amigos = new FormAmigos(aServicioAmistades.ObtenerAmigos(aUsuario));
+            FormAmigos frm_amigos = new FormAmigos(aSistema);
             this.Hide();
-            frm_amigos.ShowDialog(); 
+            frm_amigos.ShowDialog();
             this.Show();
         }
 

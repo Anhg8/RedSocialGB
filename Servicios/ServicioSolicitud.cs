@@ -8,8 +8,9 @@ using System.Threading.Tasks;
 
 namespace RedSocialGB.Servicios
 {
-    internal class ServicioSolicitud
+    public class ServicioSolicitud
     {
+
         #region *************** ATRIBUTOS ***************
 
         private Estructuras.cLista aSolicitudesPendientes;

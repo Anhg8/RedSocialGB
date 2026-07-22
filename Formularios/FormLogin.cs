@@ -1,5 +1,6 @@
 ﻿using RedSocialGB.Modelos;
 using RedSocialGB.Servicios;
+using RedSocialGB.Nucleo;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -10,8 +11,7 @@ namespace RedSocialGB.Formularios
     {
         #region *************** ATRIBUTOS ***************
 
-        private ServicioUsuarios aServicioUsuarios;
-        private ServicioAutenticacion aServicioAutenticacion;
+        private Redsocial aSistema;
 
         // Labels
         private Label lblTitulo;
@@ -31,13 +31,11 @@ namespace RedSocialGB.Formularios
 
         #region *************** CONSTRUCTOR ***************
 
-        public FormLogin(ServicioUsuarios pServicioUsuarios,
-                         ServicioAutenticacion pServicioAutenticacion)
+        public FormLogin(Redsocial pSistema)
         {
             InitializeComponent();
 
-            aServicioUsuarios = pServicioUsuarios;
-            aServicioAutenticacion = pServicioAutenticacion;
+            aSistema = pSistema;
 
             Text = "Red Social GB - Inicio de Sesión";
 
@@ -113,9 +111,9 @@ namespace RedSocialGB.Formularios
             string celular = txtCelular.Text.Trim();
             string contrasena = txtContrasena.Text.Trim();
 
-            cUsuario usuario = aServicioAutenticacion.IniciarSesion(celular, contrasena);
+            cUsuario usuario = aSistema.ServicioAutenticacion.IniciarSesion(celular, contrasena);
 
-            /*if (usuario == null)
+            if (usuario == null)
             {
                 lblMensaje.ForeColor = Color.Red;
                 lblMensaje.Text = "Celular o contraseña incorrectos.";
@@ -124,9 +122,10 @@ namespace RedSocialGB.Formularios
                 txtContrasena.Focus();
 
                 return;
-            }*/
+            }
 
-            FormPrincipal frm = new FormPrincipal(usuario);
+            aSistema.UsuarioActual = usuario;
+            FormPrincipal frm = new FormPrincipal(aSistema);
             this.Hide();
             frm.ShowDialog();
             this.Show();
@@ -134,7 +133,7 @@ namespace RedSocialGB.Formularios
 
         private void BtnRegistrarse_Click(object sender, EventArgs e)
         {
-            FormRegistro frm = new FormRegistro(aServicioUsuarios);
+            FormRegistro frm = new FormRegistro(aSistema);
 
             frm.ShowDialog();
         }

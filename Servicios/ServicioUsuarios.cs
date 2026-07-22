@@ -82,13 +82,15 @@ namespace RedSocialGB.Servicios
                 pContrasena);
 
             // Insertar en el Árbol B
-            aArbolUsuarios.Insertar(nuevoUsuario);
-            aGrafoUsuarios.AgregarVertice(nuevoUsuario);
-
+            GuardarUsuario(nuevoUsuario);
 
             return "Usuario registrado correctamente.";
         }
-
+        public void GuardarUsuario(cUsuario nuevoUsuario)
+        {
+            aArbolUsuarios.Insertar(nuevoUsuario);
+            aGrafoUsuarios.AgregarVertice(nuevoUsuario);
+        }
 
         // -------------------------------------------------
         public cUsuario BuscarPorCelular(string pCelular)
