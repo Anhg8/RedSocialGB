@@ -1,7 +1,9 @@
-﻿using RedSocialGB.Modelos;
+﻿using RedSocialGB.Estructuras.Grafo;
+using RedSocialGB.Modelos;
 using RedSocialGB.Servicios;
 using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
 namespace RedSocialGB.Formularios
@@ -135,7 +137,7 @@ namespace RedSocialGB.Formularios
         {
             FormAmigos frm_amigos = new FormAmigos(aServicioAmistades.ObtenerAmigos(aUsuario));
             this.Hide();
-            frm_amigos.ShowDialog();
+            frm_amigos.ShowDialog(); 
             this.Show();
         }
 

@@ -75,7 +75,7 @@ namespace RedSocialGB
             g.AgregarArista("989234567", "990345678"); // Héctor ↔ Inés
             g.AgregarArista("990345678", "901456789"); // Inés   ↔ Jorge 
 
-            ServicioUsuarios miServicioUsuarios = new ServicioUsuarios();
+            ServicioUsuarios miServicioUsuarios = new ServicioUsuarios(s, g);
             ServicioAutenticacion miServicioAutenticacion = new ServicioAutenticacion(miServicioUsuarios);
             FormLogin frm = new FormLogin(miServicioUsuarios, miServicioAutenticacion);
             frm.ShowDialog();

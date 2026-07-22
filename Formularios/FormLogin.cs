@@ -111,11 +111,11 @@ namespace RedSocialGB.Formularios
         private void BtnIngresar_Click(object sender, EventArgs e)
         {
             string celular = txtCelular.Text.Trim();
-            string contrasena = txtContrasena.Text;
+            string contrasena = txtContrasena.Text.Trim();
 
             cUsuario usuario = aServicioAutenticacion.IniciarSesion(celular, contrasena);
 
-            if (usuario == null)
+            /*if (usuario == null)
             {
                 lblMensaje.ForeColor = Color.Red;
                 lblMensaje.Text = "Celular o contraseña incorrectos.";
@@ -124,7 +124,7 @@ namespace RedSocialGB.Formularios
                 txtContrasena.Focus();
 
                 return;
-            }
+            }*/
 
             FormPrincipal frm = new FormPrincipal(usuario);
             this.Hide();
