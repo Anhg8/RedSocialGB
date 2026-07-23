@@ -113,7 +113,11 @@ namespace RedSocialGB.Formularios
 
             cUsuario usuario = aSistema.ServicioAutenticacion.IniciarSesion(celular, contrasena);
 
-            if (usuario == null)
+            bool autenticado = aSistema.ServicioAutenticacion.Autenticar(celular, contrasena);
+
+            lblMensaje.ForeColor = Color.Red;
+            lblMensaje.Text = "";
+            if (!autenticado)
             {
                 lblMensaje.ForeColor = Color.Red;
                 lblMensaje.Text = "Celular o contraseña incorrectos.";
