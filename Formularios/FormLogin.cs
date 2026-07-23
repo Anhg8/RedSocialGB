@@ -126,18 +126,25 @@ namespace RedSocialGB.Formularios
 
             aSistema.UsuarioActual = usuario;
             FormPrincipal frm = new FormPrincipal(aSistema);
+            LimpiarCampos();
             this.Hide();
             frm.ShowDialog();
             this.Show();
+
         }
 
         private void BtnRegistrarse_Click(object sender, EventArgs e)
         {
             FormRegistro frm = new FormRegistro(aSistema);
-
+            LimpiarCampos();
             frm.ShowDialog();
         }
-
+        
+        private void LimpiarCampos()
+        {
+            txtCelular.Clear();
+            txtContrasena.Clear();
+        }
         #endregion
     }
 }

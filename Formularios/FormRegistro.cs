@@ -134,6 +134,9 @@ namespace RedSocialGB.Formularios
                         txtCelular.Text.Trim());
 
                 FormPrincipal frm_principal = new FormPrincipal(aSistema);
+                this.Close();
+                frm_principal.ShowDialog();
+                this.Show();
 
             }
         }

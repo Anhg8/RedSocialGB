@@ -13,7 +13,7 @@ namespace RedSocialGB.Formularios
 
         private Redsocial aSistema;
 
-        private ListBox lstAmigos;
+        private FlowLayoutPanel pnlAmigos;
         private Label lblTitulo;
         private Button btnCancelar;
 
@@ -43,13 +43,15 @@ namespace RedSocialGB.Formularios
 
             lblTitulo = CrearTitulo("MIS AMIGOS", 20);
 
-            lstAmigos = new ListBox();
-            lstAmigos.Location = new Point(MargenIzquierdo, 80);
-            lstAmigos.Size = new Size(360, 350);
-            lstAmigos.Font = new Font("Segoe UI", 10);
-            lstAmigos.BorderStyle = BorderStyle.FixedSingle;
-            lstAmigos.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            Controls.Add(lstAmigos);
+            pnlAmigos = new FlowLayoutPanel();
+            pnlAmigos.Location = new Point(MargenIzquierdo, 80);
+            pnlAmigos.Size = new Size(360, 350);
+            pnlAmigos.AutoScroll = true;
+            pnlAmigos.FlowDirection = FlowDirection.TopDown;
+            pnlAmigos.WrapContents = false;
+            pnlAmigos.BorderStyle = BorderStyle.FixedSingle;
+
+            Controls.Add(pnlAmigos);
 
             btnCancelar = CrearBoton(
                 "Cerrar",
@@ -70,21 +72,72 @@ namespace RedSocialGB.Formularios
 
         private void CargarAmigos()
         {
-            lstAmigos.Items.Clear();
+            pnlAmigos.Controls.Clear();
 
-            cLista amigos = aSistema.ServicioAmistades.ObtenerAmigos(aSistema.UsuarioActual);
+            cLista amigos =
+                aSistema.ServicioAmistades.ObtenerAmigos(aSistema.UsuarioActual);
 
             if (amigos == null || amigos.EsVacia())
             {
-                lstAmigos.Items.Add("Aún no tienes amigos agregados.");
+                Label lbl = new Label();
+                lbl.Text = "Aún no tienes amigos.";
+                lbl.AutoSize = true;
+
+                pnlAmigos.Controls.Add(lbl);
                 return;
             }
 
             amigos.ProcesarObjetosLista(obj =>
             {
                 if (obj is cUsuario u)
-                    lstAmigos.Items.Add($"{u.NombreUsuario}  —  {u.Nombres} {u.Apellidos}");
+                    pnlAmigos.Controls.Add(CrearPanelAmigo(u));
             });
+        }
+        private Panel CrearPanelAmigo(cUsuario amigo)
+        {
+            Panel panel = new Panel();
+
+            panel.Width = pnlAmigos.ClientSize.Width - 25;
+            panel.Height = 60;
+            panel.BorderStyle = BorderStyle.FixedSingle;
+            panel.BackColor = Color.White;
+
+            Label lblNombre = new Label();
+
+            lblNombre.Text = $"{amigo.Nombres} {amigo.Apellidos}";
+            lblNombre.Location = new Point(10, 8);
+            lblNombre.AutoSize = true;
+
+            Label lblUsuario = new Label();
+
+            lblUsuario.Text = "@" + amigo.NombreUsuario;
+            lblUsuario.Location = new Point(10, 30);
+            lblUsuario.AutoSize = true;
+
+            Button btnPerfil = new Button();
+
+            btnPerfil.Text = "Perfil";
+            btnPerfil.Size = new Size(55, 28);
+            btnPerfil.Location = new Point(180, 15);
+
+            btnPerfil.Tag = amigo;
+            btnPerfil.Click += BtnPerfil_Click;
+
+            Button btnEliminar = new Button();
+
+            btnEliminar.Text = "Eliminar";
+            btnEliminar.Size = new Size(75, 28);
+            btnEliminar.Location = new Point(250, 15);
+
+            btnEliminar.Tag = amigo;
+            btnEliminar.Click += BtnEliminar_Click;
+
+            panel.Controls.Add(lblNombre);
+            panel.Controls.Add(lblUsuario);
+            panel.Controls.Add(btnPerfil);
+            panel.Controls.Add(btnEliminar);
+
+            return panel;
         }
 
         #endregion
@@ -95,7 +148,45 @@ namespace RedSocialGB.Formularios
         {
             Close();
         }
+        private void BtnPerfil_Click(object sender, EventArgs e)
+        {
+            Button btn = sender as Button;
 
+            if (btn?.Tag is cUsuario usuario)
+            {
+                FormPerfilUsuario frm = new FormPerfilUsuario(usuario);
+
+                frm.ShowDialog();
+            }
+        }
+        private void BtnEliminar_Click(object sender, EventArgs e)
+        {
+            Button btn = sender as Button;
+
+            if (!(btn?.Tag is cUsuario amigo))
+                return;
+
+            DialogResult respuesta = MessageBox.Show(
+                $"¿Deseas eliminar a {amigo.Nombres} {amigo.Apellidos} de tu lista de amigos?",
+                "Confirmar eliminación",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            if (respuesta != DialogResult.Yes)
+                return;
+
+            aSistema.ServicioAmistades.EliminarAmistad(
+                aSistema.UsuarioActual,
+                amigo);
+
+            CargarAmigos();
+
+            MessageBox.Show(
+                "La amistad fue eliminada correctamente.",
+                "Información",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
+        }
         #endregion
     }
 }

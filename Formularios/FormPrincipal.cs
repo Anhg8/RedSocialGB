@@ -1,4 +1,5 @@
-﻿using RedSocialGB.Estructuras.Grafo;
+﻿using RedSocialGB.Estructuras;
+using RedSocialGB.Estructuras.Grafo;
 using RedSocialGB.Modelos;
 using RedSocialGB.Nucleo;
 using RedSocialGB.Servicios;
@@ -47,6 +48,7 @@ namespace RedSocialGB.Formularios
             Text = "Red Social GB - Inicio";
 
             ConfigurarControles();
+            CargarSugerencias();
         }
 
         #endregion
@@ -66,6 +68,7 @@ namespace RedSocialGB.Formularios
             // Buscador (gris)
             txtBuscador = CrearTextBox(margenIzq, 30, margenDer - margenIzq - 25, AltoTextBox);
             txtBuscador.BackColor = Color.FromArgb(224, 224, 224);
+            txtBuscador.KeyDown += TxtBuscador_KeyDown;
 
             // Perfil (arriba derecha)
             picPerfil = new PictureBox();
@@ -117,6 +120,18 @@ namespace RedSocialGB.Formularios
             panelSugerencias.BackColor = Color.White;
             Controls.Add(panelSugerencias);
 
+            // ---------- EVENTOS ----------
+
+            btnPerfil.Click += BtnPerfil_Click;
+            btnSolicitudes.Click += BtnSolicitudes_Click;
+            btnAmigos.Click += BtnAmigos_Click;
+            btnCerrarSesion.Click += BtnCerrarSesion_Click;
+        }
+
+        private void CargarSugerencias()
+        {
+            panelSugerencias.Controls.Clear();
+
             lblSugerencias = new Label();
             lblSugerencias.Text = "Sugerencias";
             lblSugerencias.Font = new Font("Segoe UI", 11, FontStyle.Bold);
@@ -125,12 +140,95 @@ namespace RedSocialGB.Formularios
             lblSugerencias.Location = new Point(12, 10);
             panelSugerencias.Controls.Add(lblSugerencias);
 
-            // ---------- EVENTOS ----------
+            cLista sugerencias = aSistema.ServicioAmistades.ObtenerAmigosDeAmigos(aSistema.UsuarioActual);
 
-            btnPerfil.Click += BtnPerfil_Click;
-            btnSolicitudes.Click += BtnSolicitudes_Click;
-            btnAmigos.Click += BtnAmigos_Click;
-            btnCerrarSesion.Click += BtnCerrarSesion_Click;
+            if (sugerencias == null || sugerencias.EsVacia())
+            {
+                Label lblVacio = new Label();
+                lblVacio.Text = "No hay sugerencias por ahora.";
+                lblVacio.Font = new Font("Segoe UI", 9, FontStyle.Italic);
+                lblVacio.ForeColor = Color.Gray;
+                lblVacio.AutoSize = true;
+                lblVacio.Location = new Point(12, 45);
+                panelSugerencias.Controls.Add(lblVacio);
+                return;
+            }
+
+            int y = 45;
+            int contador = 0;
+
+            sugerencias.ProcesarObjetosLista(obj =>
+            {
+                if (contador >= 5) return; // límite visual, evita overflow del panel
+
+                if (obj is cUsuario u)
+                {
+                    CrearFilaSugerencia(u, y);
+                    y += 65;
+                    contador++;
+                }
+            });
+        }
+
+        private void CrearFilaSugerencia(cUsuario pUsuario, int y)
+        {
+            Panel fila = new Panel();
+            fila.Location = new Point(10, y);
+            fila.Size = new Size(panelSugerencias.Width - 25, 55);
+            fila.BorderStyle = BorderStyle.FixedSingle;
+            panelSugerencias.Controls.Add(fila);
+
+            Label lblNombre = new Label();
+            lblNombre.Text = $"{pUsuario.Nombres} {pUsuario.Apellidos}";
+            lblNombre.Font = new Font("Segoe UI", 9, FontStyle.Bold);
+            lblNombre.AutoSize = true;
+            lblNombre.Location = new Point(8, 6);
+            fila.Controls.Add(lblNombre);
+
+            Button btnAgregar = new Button();
+            btnAgregar.Text = "Agregar";
+            btnAgregar.Size = new Size(90, 26);
+            btnAgregar.Location = new Point(8, 26);
+            btnAgregar.BackColor = Color.FromArgb(40, 167, 69);
+            btnAgregar.ForeColor = Color.White;
+            btnAgregar.FlatStyle = FlatStyle.Flat;
+            btnAgregar.FlatAppearance.BorderSize = 0;
+            btnAgregar.Cursor = Cursors.Hand;
+            fila.Controls.Add(btnAgregar);
+
+            btnAgregar.Click += (s, e) =>
+            {
+                aSistema.ServicioSolicitud.EnviarSolicitud(aSistema.UsuarioActual.Celular, pUsuario.Celular);
+                MessageBox.Show("Solicitud enviada.", "Red Social GB",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                fila.Enabled = false;
+                btnAgregar.Text = "Enviada";
+            };
+        }
+
+        private void TxtBuscador_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true;
+                BuscarUsuarios();
+            }
+        }
+
+        private void BuscarUsuarios()
+        {
+            string texto = txtBuscador.Text.Trim();
+
+            if (string.IsNullOrEmpty(texto))
+                return;
+
+            cLista resultados = aSistema.ServicioUsuarios.BuscarUsuarios(texto);
+
+            FormResultadosBusqueda frm = new FormResultadosBusqueda(aSistema, resultados);
+            this.Hide();
+            frm.ShowDialog();
+            this.Show();
         }
 
         #endregion
@@ -147,7 +245,10 @@ namespace RedSocialGB.Formularios
 
         private void BtnSolicitudes_Click(object sender, EventArgs e)
         {
-            // Lógica pendiente
+            FormSolicitudes frm_solicitudes = new FormSolicitudes(aSistema);
+            this.Hide();
+            frm_solicitudes.ShowDialog();
+            this.Show();
         }
 
         private void BtnAmigos_Click(object sender, EventArgs e)

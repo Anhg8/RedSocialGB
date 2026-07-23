@@ -98,6 +98,7 @@ namespace RedSocialGB.Servicios
             return (aArbolUsuarios.Buscar(pCelular,u =>(u as cUsuario).Celular)) as cUsuario;
         }
 
+
         // -------------------------------------------------
         public cLista BuscarUsuarios(string pNombre)
         {

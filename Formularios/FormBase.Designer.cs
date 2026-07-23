@@ -2,7 +2,7 @@
 
 namespace RedSocialGB.Formularios
 {
-    partial class FormBase
+    public partial class FormBase
     {
         /// <summary>
         /// Contenedor de componentes.
@@ -28,7 +28,7 @@ namespace RedSocialGB.Formularios
         /// <summary>
         /// Método requerido para el Diseñador.
         /// </summary>
-        private void InitializeComponent()
+        public void InitializeComponent()
         {
             this.components = new Container();
         }
