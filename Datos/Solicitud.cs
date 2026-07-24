@@ -27,7 +27,7 @@ namespace RedSocialGB.Datos
                 lector["NombreUsuario" + sufijo].ToString(),
                 lector["Nombres" + sufijo].ToString(),
                 lector["Apellidos" + sufijo].ToString(),
-                Convert.ToDateTime(lector["Fecha" + sufijo]),
+                Convert.ToDateTime(lector["FechaNacimiento" + sufijo]),
                 lector["Celular" + sufijo].ToString(),
                 lector["Contrasena" + sufijo].ToString()
             );
