@@ -15,6 +15,9 @@ public class cSolicitudAmistad
 
     public cSolicitudAmistad()
     {
+        aDestinatario = new cUsuario();
+        aRemitente = new cUsuario();
+        aFechaEnvio = DateTime.Now;
     }
 
     public cSolicitudAmistad(cUsuario pRemitente, cUsuario pDestinatario)
@@ -22,6 +25,12 @@ public class cSolicitudAmistad
         aRemitente = pRemitente;
         aDestinatario = pDestinatario;
         aFechaEnvio = DateTime.Now;
+    }
+    public cSolicitudAmistad(cUsuario pRemitente, cUsuario pDestinatario, DateTime pFechaEnvio)
+    {
+        aRemitente = pRemitente;
+        aDestinatario = pDestinatario;
+        aFechaEnvio = pFechaEnvio;
     }
 
     #endregion

@@ -1,4 +1,5 @@
-﻿using RedSocialGB.Estructuras;
+﻿using RedSocialGB.Datos;
+using RedSocialGB.Estructuras;
 using RedSocialGB.Modelos;
 using System;
 using System.Collections.Generic;
@@ -15,21 +16,49 @@ namespace RedSocialGB.Servicios
         private Estructuras.cLista aSolicitudesPendientes;
         private ServicioUsuarios aServicioUsuarios;
         private ServicioAmistades aServicioAmistades;
+        private SolicitudDAO aSolicitudDAO;
 
         #endregion
 
         #region *************** CONSTRUCTOR ***************
-
+        public ServicioSolicitud()
+        {
+            aSolicitudesPendientes = new Estructuras.cLista();
+            aServicioUsuarios = new ServicioUsuarios();
+            aServicioAmistades = new ServicioAmistades();
+            aSolicitudDAO = new SolicitudDAO();
+        }
         public ServicioSolicitud(
             ServicioUsuarios pServicioUsuarios,
-            ServicioAmistades pServicioAmistades)
+            ServicioAmistades pServicioAmistades,SolicitudDAO pSolicitudDAO)
         {
             aSolicitudesPendientes = new Estructuras.cLista();
 
             aServicioUsuarios = pServicioUsuarios;
             aServicioAmistades = pServicioAmistades;
+            aSolicitudDAO = pSolicitudDAO;
         }
-
+        #region *************** PROPIEDADES ***************
+        public Estructuras.cLista SolicitudesPendientes
+        {
+            get => aSolicitudesPendientes;
+            set => aSolicitudesPendientes = value;
+        }
+        public ServicioUsuarios ServicioUsuarios
+        {
+            get => aServicioUsuarios;
+            set => aServicioUsuarios = value;
+        }
+        public ServicioAmistades ServicioAmistades
+        {
+            get => aServicioAmistades;
+            set => aServicioAmistades = value;
+        }
+        public SolicitudDAO SolicitudDAO
+        {
+            get => aSolicitudDAO;
+            set => aSolicitudDAO = value;
+        }
         #endregion
 
         #region *************** MÉTODOS ***************

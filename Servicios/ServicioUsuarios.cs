@@ -1,4 +1,5 @@
-﻿using RedSocialGB.Estructuras;
+﻿using RedSocialGB.Datos;
+using RedSocialGB.Estructuras;
 using RedSocialGB.Estructuras.Grafo;
 using RedSocialGB.Modelos;
 using RedSocialGB.Utilidades;
@@ -9,7 +10,7 @@ namespace RedSocialGB.Servicios
     public class ServicioUsuarios
     {
         #region *************** ATRIBUTOS ***************
-
+        private UsuarioDAO aUsuarioDao;
         private cArbolB aArbolUsuarios;
         private cGrafo aGrafoUsuarios;
 
@@ -21,15 +22,18 @@ namespace RedSocialGB.Servicios
         {
             aGrafoUsuarios = new cGrafo();
             aArbolUsuarios = new cArbolB(20);
+            aUsuarioDao = new UsuarioDAO();
         }
-        public ServicioUsuarios(cArbolB pArbolUsuarios,cGrafo pGrafoU)
+        public ServicioUsuarios(cArbolB pArbolUsuarios,cGrafo pGrafoU,UsuarioDAO pUsuarioDAO)
         {
             aArbolUsuarios = pArbolUsuarios;
             aGrafoUsuarios= pGrafoU;
+            aUsuarioDao = pUsuarioDAO;
         }
         #region *****************PROPIEDADES*******************
         public cArbolB ArbolUsuarios { get => aArbolUsuarios; set => aArbolUsuarios = value; }
         public cGrafo GrafoUsuarios { get => aGrafoUsuarios; set => aGrafoUsuarios = value; }
+        public UsuarioDAO UsuarioDAO { get => aUsuarioDao; set => aUsuarioDao = value; }
         #endregion
         #endregion
 
@@ -84,7 +88,7 @@ namespace RedSocialGB.Servicios
             // Insertar en el Árbol B
             aArbolUsuarios.Insertar(nuevoUsuario);
             aGrafoUsuarios.AgregarVertice(nuevoUsuario);
-
+            aUsuarioDao.Insertar(nuevoUsuario);
 
             return "Usuario registrado correctamente.";
         }
@@ -94,6 +98,10 @@ namespace RedSocialGB.Servicios
         public cUsuario BuscarPorCelular(string pCelular)
         {
             return (aArbolUsuarios.Buscar(pCelular,u =>(u as cUsuario).Celular)) as cUsuario;
+        }
+        public cUsuario BuscarPorCelularMySql(string pCelular)
+        {
+            return (aUsuarioDao.BuscarPorCelular(pCelular));
         }
 
         // -------------------------------------------------
@@ -118,6 +126,10 @@ namespace RedSocialGB.Servicios
             return encontrados;
         
         }
+        public cLista BuscarUsuariosMysql(string pNombre)
+        {
+            return aUsuarioDao.BuscarPorNombre(pNombre);
+        }
         
         public bool ExisteCelular(string pCelular)
         {
@@ -131,11 +143,11 @@ namespace RedSocialGB.Servicios
                 return false;
 
             aArbolUsuarios.Eliminar(pCelular);
-
+            aUsuarioDao.Eliminar(pCelular);
             return true;
         }
+        
 
-    
         #endregion
     }
 }

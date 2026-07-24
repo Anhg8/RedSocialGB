@@ -12,7 +12,6 @@ namespace RedSocialGB.Modelos
         #region ---Atributos---
         private cUsuario aUsuario1;
         private cUsuario aUsuario2;
-        private DateTime aFecha;
         #endregion
 
         #region ---Metodos
@@ -21,13 +20,13 @@ namespace RedSocialGB.Modelos
         {
             aUsuario1 = new cUsuario();
             aUsuario2 = new cUsuario();
-            aFecha = DateTime.MinValue;
+
         }
-        public cAmistad(cUsuario pUsuario1, cUsuario pUsuario2, DateTime pFecha)
+        public cAmistad(cUsuario pUsuario1, cUsuario pUsuario2)
         {
             aUsuario1 = pUsuario1;
             aUsuario2 = pUsuario2;
-            aFecha = pFecha;
+
         }
         //----Propiedades----
         public cUsuario Usuario1
@@ -42,11 +41,6 @@ namespace RedSocialGB.Modelos
             set { aUsuario2 = value; }
         }
 
-        public DateTime Fecha
-        {
-            get { return aFecha; }
-            set { aFecha = value; }
-        }
         //----Otros metodos----
         public bool ContieneUsuario(cUsuario usuario)
         {

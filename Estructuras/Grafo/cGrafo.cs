@@ -10,6 +10,7 @@ namespace RedSocialGB.Estructuras.Grafo
         #region --- Atributos
 
         private cLista aVertices;
+        private bool aDirigido;
 
         #endregion
 
@@ -21,12 +22,22 @@ namespace RedSocialGB.Estructuras.Grafo
             set => aVertices = value;
         }
 
+        public bool Dirigido
+        {
+            get => aDirigido;
+            set => aDirigido = value;
+        }
         #endregion
 
         #region --- Constructores
-
         public cGrafo()
         {
+            aDirigido = false;
+            aVertices = new cLista();
+        }
+        public cGrafo(bool Dirigido)
+        {
+            aDirigido = Dirigido;
             aVertices = new cLista();
         }
 
@@ -49,7 +60,12 @@ namespace RedSocialGB.Estructuras.Grafo
                 if (v != null) total += v.ListaAdyacencia.Longitud();
             });
             // Grafo no dirigido: cada arista se cuenta dos veces
-            return total / 2;
+            if (!aDirigido)
+            {
+                return total / 2;
+            }
+
+            return total;
         }
         //------------------------------------------------
 
@@ -125,8 +141,10 @@ namespace RedSocialGB.Estructuras.Grafo
                 return false;
 
             // Grafo no dirigido: agregar en ambas direcciones
+            
             pOrigen.ListaAdyacencia.Agregar(new cArista(pDestino));
-            pDestino.ListaAdyacencia.Agregar(new cArista(pOrigen));
+            if (!aDirigido)
+                pDestino.ListaAdyacencia.Agregar(new cArista(pOrigen));
             return true;
         }
         //------------------------------------------------
@@ -170,7 +188,8 @@ namespace RedSocialGB.Estructuras.Grafo
 
             // Grafo no dirigido: eliminar en ambas direcciones
             EliminarAristaInterno(vOrigen, pDestino);
-            EliminarAristaInterno(vDestino, pOrigen);
+            if (!aDirigido)
+                EliminarAristaInterno(vDestino, pOrigen);
         }
         
         

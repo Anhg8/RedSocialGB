@@ -1,4 +1,5 @@
-﻿using RedSocialGB.Estructuras;
+﻿using RedSocialGB.Datos;
+using RedSocialGB.Estructuras;
 using RedSocialGB.Estructuras.Grafo;
 using RedSocialGB.Modelos;
 using System;
@@ -12,7 +13,7 @@ namespace RedSocialGB.Servicios
     public class ServicioAmistades
     {
         #region *************** ATRIBUTOS ***************
-        
+        private AmistadDAO aAmistadDAO;
         private cGrafo aGrafo;
 
         #endregion
@@ -22,14 +23,23 @@ namespace RedSocialGB.Servicios
             get => aGrafo;
             set => aGrafo = value;
         }
-
+        public AmistadDAO AmistadDAO
+        {
+            get => aAmistadDAO;
+            set => aAmistadDAO = value;
+        }
         #endregion
 
         #region *************** CONSTRUCTOR ***************
-
-        public ServicioAmistades(cGrafo pGrafo)
+        public ServicioAmistades()
+        {
+            aGrafo = new cGrafo();
+            aAmistadDAO = new AmistadDAO();
+        }
+        public ServicioAmistades(cGrafo pGrafo, AmistadDAO pAmistadDAO)
         {
             aGrafo = pGrafo;
+            aAmistadDAO = pAmistadDAO;
         }
 
         #endregion
@@ -46,7 +56,9 @@ namespace RedSocialGB.Servicios
             if (SonAmigos(pUsuario1, pUsuario2))
                 return false;
 
+            cAmistad amistad = new cAmistad(pUsuario1, pUsuario2);
             aGrafo.AgregarArista(pUsuario1.ToString(), pUsuario2.ToString());
+            aAmistadDAO.Insertar(pUsuario1.ToString(),pUsuario2.ToString());
 
             return true;
         }
@@ -60,6 +72,8 @@ namespace RedSocialGB.Servicios
 
             aGrafo.EliminarArista(pUsuario1.ToString(), pUsuario2.ToString());
 
+            aAmistadDAO.Eliminar(pUsuario1.ToString(), pUsuario2.ToString());
+
             return true;
         }
 
@@ -68,6 +82,10 @@ namespace RedSocialGB.Servicios
                               cUsuario pUsuario2)
         {
             return aGrafo.ExisteArista(pUsuario1.ToString(), pUsuario2.ToString());
+        }
+        public bool SonAmigosMySql(string pCelular1,string pCelular2)
+        {
+            return aAmistadDAO.SonAmigos(pCelular1, pCelular2);
         }
 
         // -------------------------------------------------
@@ -89,6 +107,10 @@ namespace RedSocialGB.Servicios
             });
 
             return amigos;
+        }
+        public cLista ObtenerAmigosMySql(string pCelular)
+        {
+            return aAmistadDAO.ObtenerAmigos(pCelular);
         }
         public cLista ObtenerAmigosBFS(cUsuario usuario)
         {
