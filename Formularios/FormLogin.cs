@@ -1,5 +1,6 @@
 ﻿using RedSocialGB.Modelos;
 using RedSocialGB.Servicios;
+using RedSocialGB.Nucleo;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -10,8 +11,7 @@ namespace RedSocialGB.Formularios
     {
         #region *************** ATRIBUTOS ***************
 
-        private ServicioUsuarios aServicioUsuarios;
-        private ServicioAutenticacion aServicioAutenticacion;
+        private Redsocial aSistema;
 
         // Labels
         private Label lblTitulo;
@@ -31,13 +31,11 @@ namespace RedSocialGB.Formularios
 
         #region *************** CONSTRUCTOR ***************
 
-        public FormLogin(ServicioUsuarios pServicioUsuarios,
-                         ServicioAutenticacion pServicioAutenticacion)
+        public FormLogin(Redsocial pSistema)
         {
             InitializeComponent();
 
-            aServicioUsuarios = pServicioUsuarios;
-            aServicioAutenticacion = pServicioAutenticacion;
+            aSistema = pSistema;
 
             Text = "Red Social GB - Inicio de Sesión";
 
@@ -111,9 +109,9 @@ namespace RedSocialGB.Formularios
         private void BtnIngresar_Click(object sender, EventArgs e)
         {
             string celular = txtCelular.Text.Trim();
-            string contrasena = txtContrasena.Text;
+            string contrasena = txtContrasena.Text.Trim();
 
-            cUsuario usuario = aServicioAutenticacion.IniciarSesion(celular, contrasena);
+            cUsuario usuario = aSistema.ServicioAutenticacion.IniciarSesion(celular, contrasena);
 
             if (usuario == null)
             {
@@ -126,29 +124,27 @@ namespace RedSocialGB.Formularios
                 return;
             }
 
-            lblMensaje.ForeColor = Color.Green;
-            lblMensaje.Text = "Bienvenido " + usuario.Nombres + ".";
+            aSistema.UsuarioActual = usuario;
+            FormPrincipal frm = new FormPrincipal(aSistema);
+            LimpiarCampos();
+            this.Hide();
+            frm.ShowDialog();
+            this.Show();
 
-            MessageBox.Show(
-                "Bienvenido " + usuario.Nombres,
-                "Inicio de sesión",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Information);
-
-            // Aquí abrirás el formulario principal
-            // FormPrincipal frm = new FormPrincipal(usuario, aServicioUsuarios);
-            // this.Hide();
-            // frm.ShowDialog();
-            // this.Show();
         }
 
         private void BtnRegistrarse_Click(object sender, EventArgs e)
         {
-            FormRegistro frm = new FormRegistro(aServicioUsuarios);
-
+            FormRegistro frm = new FormRegistro(aSistema);
+            LimpiarCampos();
             frm.ShowDialog();
         }
-
+        
+        private void LimpiarCampos()
+        {
+            txtCelular.Clear();
+            txtContrasena.Clear();
+        }
         #endregion
     }
 }

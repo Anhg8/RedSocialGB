@@ -2,6 +2,8 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using RedSocialGB.Nucleo;
+using RedSocialGB.Modelos;
 
 namespace RedSocialGB.Formularios
 {
@@ -9,7 +11,7 @@ namespace RedSocialGB.Formularios
     {
         #region *************** ATRIBUTOS ***************
 
-        private ServicioUsuarios aServicio;
+        private Redsocial aSistema;
 
         private Label lblTitulo;
         private Label lblNombreUsuario;
@@ -34,10 +36,10 @@ namespace RedSocialGB.Formularios
 
         #region *************** CONSTRUCTORES ***************
 
-        public FormRegistro(ServicioUsuarios pServicio)
+        public FormRegistro(Redsocial pSistema)
         {
             InitializeComponent();
-            aServicio = pServicio;
+            aSistema = pSistema;
             Text = "Red Social GB - Registro";
             ConfigurarControles();
         }
@@ -105,13 +107,13 @@ namespace RedSocialGB.Formularios
             ClientSize = new Size(460, yActual);
         }
 
-        #endregion  // ← faltaba este (CONFIGURACIÓN UI)
+        #endregion 
 
         #region *************** EVENTOS ***************
 
         private void BtnRegistrarse_Click(object sender, EventArgs e)
         {
-            string resultado = aServicio.RegistrarUsuario(
+            string resultado = aSistema.ServicioUsuarios.RegistrarUsuario(
                 txtNombreUsuario.Text.Trim(),
                 txtNombres.Text.Trim(),
                 txtApellidos.Text.Trim(),
@@ -127,13 +129,15 @@ namespace RedSocialGB.Formularios
 
             if (exito)
             {
-                MessageBox.Show(
-                    resultado,
-                    "Registro exitoso",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
+                aSistema.UsuarioActual =
+                    aSistema.ServicioUsuarios.BuscarPorCelular(
+                        txtCelular.Text.Trim());
 
-                LimpiarCampos();
+                FormPrincipal frm_principal = new FormPrincipal(aSistema);
+                this.Close();
+                frm_principal.ShowDialog();
+                this.Show();
+
             }
         }
 
@@ -143,7 +147,7 @@ namespace RedSocialGB.Formularios
             Close();
         }
 
-        #endregion  // ← faltaba este (EVENTOS)
+        #endregion  
 
         #region *************** UTILIDADES ***************
 

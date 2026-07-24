@@ -93,7 +93,6 @@ namespace RedSocialGB.Servicios
             return "Usuario registrado correctamente.";
         }
 
-
         // -------------------------------------------------
         public cUsuario BuscarPorCelular(string pCelular)
         {
@@ -103,6 +102,7 @@ namespace RedSocialGB.Servicios
         {
             return (aUsuarioDao.BuscarPorCelular(pCelular));
         }
+
 
         // -------------------------------------------------
         public cLista BuscarUsuarios(string pNombre)
