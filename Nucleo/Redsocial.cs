@@ -1,4 +1,5 @@
-﻿using RedSocialGB.Estructuras;
+﻿using RedSocialGB.Datos;
+using RedSocialGB.Estructuras;
 using RedSocialGB.Estructuras.Grafo;
 using RedSocialGB.Modelos;
 using RedSocialGB.Servicios;
@@ -59,23 +60,27 @@ namespace RedSocialGB.Nucleo
         public Redsocial()
         {
             // Crear estructuras principales
-            aArbolUsuarios = new cArbolB(3);
-            aGrafoUsuarios = new cGrafo();
+            SolicitudDAO solicitudDAO = new SolicitudDAO();
+            AmistadDAO amistadDAO = new AmistadDAO();
+            UsuarioDAO usuarioDAO = new UsuarioDAO();
+
+            aArbolUsuarios = usuarioDAO.CargarDatos();
+            aGrafoUsuarios = amistadDAO.CargarDatos();
 
             // Crear servicios
             aServicioUsuarios = new ServicioUsuarios(
                 aArbolUsuarios,
-                aGrafoUsuarios);
+                aGrafoUsuarios,usuarioDAO);
 
             aServicioAmistades = new ServicioAmistades(
-                aGrafoUsuarios);
+                aGrafoUsuarios,amistadDAO);
 
             aServicioAutenticacion = new ServicioAutenticacion(
                 aServicioUsuarios);
 
             aServicioSolicitud = new ServicioSolicitud(
                 aServicioUsuarios,
-                aServicioAmistades);
+                aServicioAmistades,solicitudDAO);
 
             // Aún no existe un usuario autenticado
             aUsuarioActual = null;
