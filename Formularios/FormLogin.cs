@@ -111,16 +111,16 @@ namespace RedSocialGB.Formularios
             string celular = txtCelular.Text.Trim();
             string contrasena = txtContrasena.Text.Trim();
 
-            cUsuario usuario = aSistema.ServicioAutenticacion.IniciarSesion(celular, contrasena);
+            string rpta = aSistema.ServicioAutenticacion.IniciarSesion(celular, contrasena);
+            bool inicio = rpta == "Usuario inicio sesion correctamente.";
 
-            bool autenticado = aSistema.ServicioAutenticacion.Autenticar(celular, contrasena);
 
             lblMensaje.ForeColor = Color.Red;
             lblMensaje.Text = "";
-            if (!autenticado)
+            if (!inicio)
             {
                 lblMensaje.ForeColor = Color.Red;
-                lblMensaje.Text = "Celular o contraseña incorrectos.";
+                lblMensaje.Text = rpta;
 
                 txtContrasena.Clear();
                 txtContrasena.Focus();
@@ -128,7 +128,7 @@ namespace RedSocialGB.Formularios
                 return;
             }
 
-            aSistema.UsuarioActual = usuario;
+            aSistema.UsuarioActual = aSistema.ServicioAutenticacion.Autenticar(celular,contrasena);
             FormPrincipal frm = new FormPrincipal(aSistema);
             LimpiarCampos();
             this.Hide();

@@ -105,6 +105,7 @@ namespace RedSocialGB.Estructuras.Grafo
             {
                 cArista a = obj as cArista;
                 //a.Destino = cVertice, a.Destino.Nodo = object
+
                 if (a != null && a.Destino.Nodo.ToString() == pDestino)
                     existe = true;
             });

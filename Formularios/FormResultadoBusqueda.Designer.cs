@@ -4,11 +4,11 @@ using System.Windows.Forms;
 
 namespace RedSocialGB.Formularios
 {
-    public partial class FormResultadoBusqueda : Form
+    public partial class FormResultadosBusqueda : Form
     {
         private System.ComponentModel.IContainer components = null;
 
-        public FormResultadoBusqueda()
+        public FormResultadosBusqueda()
         {
             InitializeComponent();
         }

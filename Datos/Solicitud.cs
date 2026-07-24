@@ -27,23 +27,29 @@ namespace RedSocialGB.Datos
                 lector["NombreUsuario" + sufijo].ToString(),
                 lector["Nombres" + sufijo].ToString(),
                 lector["Apellidos" + sufijo].ToString(),
-                Convert.ToDateTime(lector["FechaNacimiento" + sufijo]),
+                Convert.ToDateTime(lector["Fecha" + sufijo]),
                 lector["Celular" + sufijo].ToString(),
                 lector["Contrasena" + sufijo].ToString()
             );
         }
         #endregion
-        public bool Insertar(cSolicitudAmistad pSolicitud)
+        public bool Insertar(string pRemitente,string pDestinatario)
         {
+            cSolicitudAmistad buscar = Buscar(pRemitente, pDestinatario);
+            if (buscar!=null)
+            {
+                
+                return false;
+            }
             using (MySqlConnection conexion = aConexion.ObtenerConexion())
             {
                 conexion.Open();
 
                 string sql = @"INSERT INTO SolicitudAmistad (Remitente,Destinatario,FechaEnvio) VALUES (@Remitente,@Destinatario,@Fecha)";
                 MySqlCommand comando = new MySqlCommand(sql, conexion);
-                comando.Parameters.AddWithValue("@Remitente", pSolicitud.Remitente.ToString());
-                comando.Parameters.AddWithValue("@Destinatario", pSolicitud.Destinatario.ToString());
-                comando.Parameters.AddWithValue("@Fecha", pSolicitud.FechaEnvio);
+                comando.Parameters.AddWithValue("@Remitente", pRemitente);
+                comando.Parameters.AddWithValue("@Destinatario", pDestinatario);
+                comando.Parameters.AddWithValue("@Fecha", DateTime.Now);
 
 
                 return comando.ExecuteNonQuery() > 0; //si se inserto al menos un registro, true, sino false

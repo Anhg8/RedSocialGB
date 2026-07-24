@@ -94,6 +94,7 @@ namespace RedSocialGB.Servicios
                 new cSolicitudAmistad(remitente, destinatario);
 
             aSolicitudesPendientes.Agregar(solicitud);
+            aSolicitudDAO.Insertar(pCelularRemitente,pCelularDestinatario);
 
             return "Solicitud enviada correctamente.";
         }
@@ -114,6 +115,7 @@ namespace RedSocialGB.Servicios
                 solicitud.Destinatario);
 
             aSolicitudesPendientes.Eliminar(solicitud);
+            aSolicitudDAO.Eliminar(pCelularRemitente, pCelularDestinatario);
 
             return "Solicitud aceptada correctamente.";
         }
@@ -130,6 +132,7 @@ namespace RedSocialGB.Servicios
                 return false;
 
             aSolicitudesPendientes.Eliminar(solicitud);
+            aSolicitudDAO.Eliminar(pCelularRemitente, pCelularDestinatario);
 
             return true;
         }
@@ -227,6 +230,10 @@ namespace RedSocialGB.Servicios
                 if (!ExisteSolicitud(pUsuario.ToString(), u.ToString())){
                     sugerencias.Agregar(u);
                 }
+                else
+                {
+                    sugerencias.Eliminar(u);
+                }
             });
             return sugerencias;
 
@@ -234,3 +241,4 @@ namespace RedSocialGB.Servicios
         #endregion
     }
 }
+    #endregion

@@ -26,33 +26,41 @@ namespace RedSocialGB.Servicios
         #region **************** MÉTODOS ****************
 
         // -------------------------------------------------
-        public cUsuario IniciarSesion(string pCelular, string pContrasena)
+        public string IniciarSesion(string pCelular, string pContrasena)
         {
             // Validar datos de entrada
             if (!Utilidades.cValidaciones.ValidarCelular(pCelular))
-                return null;
+                return "Numero no Válido";
 
             if (!Utilidades.cValidaciones.ValidarContrasena(pContrasena))
-                return null;
+                return "Constrasena no Válida";
 
             // Buscar usuario
             cUsuario usuario = aServicioUsuarios.BuscarPorCelular(pCelular);
 
             if (usuario == null)
-                return null;
+                return "Usuario no encontrado";
 
             // Verificar contraseña
             if (usuario.Contrasena != pContrasena)
-                return null;
+                return "Constraseña incorrecta";
 
             // Login correcto
-            return usuario;
+            return "Usuario inicio sesion correctamente.";
         }
 
         // -------------------------------------------------
-        public bool Autenticar(string pCelular, string pContrasena)
+        public cUsuario Autenticar(string pCelular, string pContrasena)
         {
-            return IniciarSesion(pCelular, pContrasena) != null;
+            string rpta = IniciarSesion(pCelular, pContrasena);
+            if (rpta == "Usuario inicio sesion correctamente.")
+            {
+                return aServicioUsuarios.BuscarPorCelular(pCelular);
+            }
+            else
+            {
+                return null;
+            }
         }
         #endregion
     }
