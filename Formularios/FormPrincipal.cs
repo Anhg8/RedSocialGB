@@ -23,6 +23,9 @@ namespace RedSocialGB.Formularios
         // TextBox
         private TextBox txtBuscador;
 
+        // Autocompletado
+        private ListBox lstSugerenciasBusqueda;
+
         // PictureBox
         private PictureBox picPerfil;
 
@@ -69,6 +72,19 @@ namespace RedSocialGB.Formularios
             txtBuscador = CrearTextBox(margenIzq, 30, margenDer - margenIzq - 25, AltoTextBox);
             txtBuscador.BackColor = Color.FromArgb(224, 224, 224);
             txtBuscador.KeyDown += TxtBuscador_KeyDown;
+            txtBuscador.TextChanged += TxtBuscador_TextChanged;
+            txtBuscador.LostFocus += TxtBuscador_LostFocus;
+
+            // Lista de autocompletado (flotante, debajo del buscador)
+            lstSugerenciasBusqueda = new ListBox();
+            lstSugerenciasBusqueda.Location = new Point(txtBuscador.Left, txtBuscador.Bottom + 2);
+            lstSugerenciasBusqueda.Width = txtBuscador.Width;
+            lstSugerenciasBusqueda.Height = 120;
+            lstSugerenciasBusqueda.Font = new Font("Segoe UI", 9);
+            lstSugerenciasBusqueda.Visible = false;
+            lstSugerenciasBusqueda.Click += LstSugerenciasBusqueda_Click;
+            Controls.Add(lstSugerenciasBusqueda);
+            lstSugerenciasBusqueda.BringToFront();
 
             // Perfil (arriba derecha)
             picPerfil = new PictureBox();
@@ -127,6 +143,10 @@ namespace RedSocialGB.Formularios
             btnAmigos.Click += BtnAmigos_Click;
             btnCerrarSesion.Click += BtnCerrarSesion_Click;
         }
+
+        #endregion
+
+        #region *************** SUGERENCIAS DE AMISTAD ***************
 
         private void CargarSugerencias()
         {
@@ -207,11 +227,84 @@ namespace RedSocialGB.Formularios
             };
         }
 
+        #endregion
+
+        #region *************** BÚSQUEDA ***************
+
+        private void TxtBuscador_TextChanged(object sender, EventArgs e)
+        {
+            string texto = txtBuscador.Text.Trim();
+
+            if (string.IsNullOrEmpty(texto))
+            {
+                lstSugerenciasBusqueda.Visible = false;
+                return;
+            }
+
+            cLista resultados = aSistema.ServicioUsuarios.BuscarUsuarios(texto);
+
+            lstSugerenciasBusqueda.Items.Clear();
+
+            if (resultados == null || resultados.EsVacia())
+            {
+                lstSugerenciasBusqueda.Visible = false;
+                return;
+            }
+
+            int contador = 0;
+
+            resultados.ProcesarObjetosLista(obj =>
+            {
+                if (contador >= 6) return; // límite visual
+
+                if (obj is cUsuario u)
+                {
+                    lstSugerenciasBusqueda.Items.Add(u);
+                    contador++;
+                }
+            });
+
+            lstSugerenciasBusqueda.DisplayMember = "NombreUsuario";
+            lstSugerenciasBusqueda.Visible = lstSugerenciasBusqueda.Items.Count > 0;
+            lstSugerenciasBusqueda.BringToFront();
+        }
+
+        private void LstSugerenciasBusqueda_Click(object sender, EventArgs e)
+        {
+            if (lstSugerenciasBusqueda.SelectedItem is cUsuario u)
+            {
+                lstSugerenciasBusqueda.Visible = false;
+                txtBuscador.Text = "";
+
+                cLista resultado = new cLista();
+                resultado.Agregar(u);
+
+                FormResultadosBusqueda frm = new FormResultadosBusqueda(aSistema, resultado);
+                this.Hide();
+                frm.ShowDialog();
+                this.Show();
+            }
+        }
+
+        private void TxtBuscador_LostFocus(object sender, EventArgs e)
+        {
+            // Pequeño delay para permitir el click en la lista antes de ocultarla
+            var timer = new Timer { Interval = 150 };
+            timer.Tick += (s, ev) =>
+            {
+                lstSugerenciasBusqueda.Visible = false;
+                timer.Stop();
+                timer.Dispose();
+            };
+            timer.Start();
+        }
+
         private void TxtBuscador_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
             {
                 e.SuppressKeyPress = true;
+                lstSugerenciasBusqueda.Visible = false;
                 BuscarUsuarios();
             }
         }
@@ -233,7 +326,7 @@ namespace RedSocialGB.Formularios
 
         #endregion
 
-        #region *************** EVENTOS ***************
+        #region *************** EVENTOS MENÚ ***************
 
         private void BtnPerfil_Click(object sender, EventArgs e)
         {
